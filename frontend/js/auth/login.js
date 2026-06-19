@@ -1,42 +1,33 @@
-const loginForm = document.getElementById("loginForm");
-const loginMessage = document.getElementById("loginMessage");
+document.addEventListener("DOMContentLoaded", () => {
+    const loginForm = document.getElementById("loginForm");
+    const loginMessage = document.getElementById("loginMessage");
 
-function setMessage(text, type) {
-  loginMessage.textContent = text;
-  loginMessage.className = `message ${type}`.trim();
-}
-
-async function submitLogin(event) {
-  event.preventDefault();
-
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value;
-
-  if (!username || !password) {
-    setMessage("Please enter both username and password.", "error");
-    return;
-  }
-
-  setMessage("Checking credentials...", "");
-
-  try {
-    const response = await fetch("../../../backend/api/login.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ username, password })
-    });
-
-    if (!response.ok) {
-      throw new Error("Login failed.");
+    if (!loginForm) {
+        return;
     }
 
-    setMessage("Login request sent successfully.", "success");
-    window.location.href = "../dashboard/index.php";
-  } catch (error) {
-    setMessage("Backend login endpoint is not ready yet.", "error");
-  }
-}
+    loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        loginMessage.textContent = "Signing in...";
+        loginMessage.style.color = "";
 
-loginForm.addEventListener("submit", submitLogin);
+        try {
+            const formData = new FormData(loginForm);
+            const response = await fetch("handle_login.php", {
+                method: "POST",
+                body: formData,
+            });
+
+            const result = await response.json();
+            loginMessage.textContent = result.message;
+            loginMessage.style.color = result.success ? "green" : "red";
+
+            if (result.success) {
+                window.location.href = "../dashboard/index.php";
+            }
+        } catch (error) {
+            loginMessage.textContent = "Unable to reach the login service. Please try again.";
+            loginMessage.style.color = "red";
+        }
+    });
+});

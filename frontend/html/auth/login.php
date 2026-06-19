@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+if (isset($_SESSION["user_id"])) {
+    header("Location: ../dashboard/index.php");
+    exit;
+}
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -17,8 +25,8 @@
 
       <form id="loginForm" class="auth-form" autocomplete="on" novalidate>
         <label class="field">
-          <span>Username</span>
-          <input type="text" name="username" id="username" required autocomplete="username" placeholder="Enter username">
+          <span>Username or email</span>
+          <input type="text" name="username" id="username" required autocomplete="username" placeholder="Enter username or email">
         </label>
 
         <label class="field">
@@ -37,7 +45,7 @@
 
       <div class="auth-links">
         <a href="forgot_password.php">Forgot password?</a>
-        <a href="logout.php">Logout</a>
+        <a href="register.php">Create an account</a>
       </div>
     </section>
   </main>

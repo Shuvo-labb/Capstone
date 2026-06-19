@@ -6,6 +6,8 @@ config/.env
 # Uploaded files and backups
 backend/uploads/*
 !backend/uploads/.gitkeep
+uploads/*
+!uploads/.gitkeep
 database/backups/*
 !database/backups/.gitkeep
 

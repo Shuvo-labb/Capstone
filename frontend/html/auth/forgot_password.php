@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+if (isset($_SESSION["user_id"])) {
+    header("Location: ../dashboard/index.php");
+    exit;
+}
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -23,6 +31,7 @@
 
         <button type="submit" class="primary-btn">Send reset link</button>
         <p id="forgotMessage" class="message" aria-live="polite"></p>
+        <p id="forgotResetLink" class="message" hidden></p>
       </form>
 
       <div class="auth-links">

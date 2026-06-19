@@ -1,31 +1,47 @@
-const forgotForm = document.getElementById('forgotForm');
-const forgotMessage = document.getElementById('forgotMessage');
+document.addEventListener("DOMContentLoaded", () => {
+    const forgotForm = document.getElementById("forgotForm");
+    const forgotMessage = document.getElementById("forgotMessage");
+    const forgotResetLink = document.getElementById("forgotResetLink");
 
-function setForgotMessage(text, type){
-  forgotMessage.textContent = text;
-  forgotMessage.className = `message ${type}`.trim();
-}
-
-forgotForm.addEventListener('submit', async function(e){
-  e.preventDefault();
-  const email = document.getElementById('email').value.trim();
-  if(!email){
-    setForgotMessage('Please enter your email address.', 'error');
-    return;
-  }
-
-  setForgotMessage('Sending reset link...', '');
-  try{
-    const res = await fetch('../../../backend/api/forgot_password.php', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({email})
-    });
-    if(!res.ok){
-      throw new Error('Request failed');
+    if (!forgotForm) {
+        return;
     }
-    setForgotMessage('If the email exists, a reset link was sent.', 'success');
-  }catch(err){
-    setForgotMessage('Unable to contact server — try again later.', 'error');
-  }
+
+    forgotForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        forgotMessage.textContent = "Sending reset link...";
+        forgotMessage.style.color = "";
+
+        if (forgotResetLink) {
+            forgotResetLink.hidden = true;
+            forgotResetLink.textContent = "";
+        }
+
+        try {
+            const formData = new FormData(forgotForm);
+            const response = await fetch("handle_forgot_password.php", {
+                method: "POST",
+                body: formData,
+            });
+
+            const result = await response.json();
+            forgotMessage.textContent = result.message;
+            forgotMessage.style.color = result.success ? "green" : "red";
+
+            if (result.success) {
+                forgotForm.reset();
+
+                if (result.reset_link && forgotResetLink) {
+                    forgotResetLink.hidden = false;
+                    forgotResetLink.innerHTML =
+                        'Development reset link: <a href="' +
+                        result.reset_link +
+                        '">Open reset page</a>';
+                }
+            }
+        } catch (error) {
+            forgotMessage.textContent = "Unable to reach the password reset service. Please try again.";
+            forgotMessage.style.color = "red";
+        }
+    });
 });

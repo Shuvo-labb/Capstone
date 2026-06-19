@@ -1,17 +1,5 @@
 <?php
-// Main Dashboard
-// Notes:
-// - This is a simple, clean starter dashboard page.
-// - Authentication checks and backend APIs should be implemented in `backend/api`.
-// - Keep UI minimal; JS will fetch real data when APIs exist.
-// - Place this file under frontend/html/dashboard/index.php
-
-// Start session if using PHP sessions for auth (placeholder)
-// session_start();
-// if (!isset($_SESSION['user_id'])) {
-//     header('Location: ../auth/login.php');
-//     exit;
-// }
+require_once __DIR__ . "/../auth/require_login.php";
 ?>
 <!doctype html>
 <html lang="en">
@@ -41,41 +29,38 @@
           <p class="eyebrow">Security Threat Dashboard</p>
         </div>
         <nav class="nav-links">
-          <a href="../auth/login.php">Login</a>
           <a href="../auth/logout.php">Logout</a>
-          <a href="../auth/forgot_password.php">Forgot Password</a>
-          <a href="../auth/reset_password.php">Reset Password</a>
 
           <hr>
-          <a href="index.php">Main Dashboard</a>
-          <a href="#">Threat Overview</a>
-          <a href="#">Real-Time Alerts</a>
-          <a href="#">Statistics</a>
-          <a href="#">Activity Logs</a>
-          <a href="#">Suspicious IPs</a>
-          <a href="#">Failed Login Attempts</a>
+          <a href="index.php" class="active">Main Dashboard</a>
+          <a href="threat_overview.php">Threat Overview</a>
+          <a href="real_time_alerts.php">Real-Time Alerts</a>
+          <a href="statistics.php">Statistics</a>
+          <a href="activity_logs.php">Activity Logs</a>
+          <a href="suspicious_ips.php">Suspicious IPs</a>
+          <a href="failed_logins.php">Failed Login Attempts</a>
 
           <hr>
-          <a href="#">Log Upload</a>
-          <a href="#">Parser Results</a>
-          <a href="#">Threat Analysis</a>
-          <a href="#">Detailed Threat Report</a>
-          <a href="#">SQL Injection Attempts</a>
-          <a href="#">XSS Attempts</a>
-          <a href="#">Malware Upload Attempts</a>
+          <a href="upload_log.php">Log Upload</a>
+          <a href="parser_results.php">Parser Results</a>
+          <a href="threat_analysis.php">Threat Analysis</a>
+          <a href="detailed_threat_report.php">Detailed Threat Report</a>
+          <a href="sql_injection_attempts.php">SQL Injection Attempts</a>
+          <a href="xss_attempts.php">XSS Attempts</a>
+          <a href="malware_attempts.php">Malware Upload Attempts</a>
 
           <hr>
-          <a href="#">Export Reports</a>
-          <a href="#">Daily Report</a>
-          <a href="#">Weekly Report</a>
-          <a href="#">Monthly Report</a>
-          <a href="#">Custom Report Builder</a>
+          <a href="export_reports.php">Export Reports</a>
+          <a href="daily_report.php">Daily Report</a>
+          <a href="weekly_report.php">Weekly Report</a>
+          <a href="monthly_report.php">Monthly Report</a>
+          <a href="custom_report_builder.php">Custom Report Builder</a>
 
           <hr>
-          <a href="#">System Settings</a>
-          <a href="#">Profile</a>
-          <a href="#">Change Password</a>
-          <a href="#">Audit Trail</a>
+          <a href="system_settings.php">System Settings</a>
+          <a href="profile.php">Profile</a>
+          <a href="change_password.php">Change Password</a>
+          <a href="audit_trail.php">Audit Trail</a>
         </nav>
       </aside>
 
@@ -86,9 +71,9 @@
         <p class="muted" style="margin:0">Overview of threats, alerts, and system status.</p>
       </div>
       <div class="actions">
-        <a class="small-btn" href="../../auth/logout.php">Logout</a>
-        <a class="small-btn" href="../../log-handling/upload.php">Upload Log</a>
-        <a class="small-btn" href="../../reporting/export_reports.php">Export Report</a>
+        <a class="small-btn" href="../auth/logout.php">Logout</a>
+        <a class="small-btn" href="upload_log.php">Upload Log</a>
+        <a class="small-btn" href="export_reports.php">Export Report</a>
       </div>
     </div>
 

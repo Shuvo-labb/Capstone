@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+if (isset($_SESSION["user_id"])) {
+    header("Location: ../dashboard/index.php");
+    exit;
+}
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -12,10 +20,12 @@
       <div class="auth-brand">
         <p class="eyebrow">Security Threat Dashboard</p>
         <h1>Reset Password</h1>
-        <p class="muted">Set a new password for your account. The reset token is required.</p>
+        <p class="muted">Set a new password for your account using your reset link.</p>
       </div>
 
       <form id="resetForm" class="auth-form" novalidate>
+        <input type="hidden" name="token" id="resetToken">
+
         <label class="field">
           <span>New password</span>
           <input type="password" name="password" id="password" required placeholder="New password" autocomplete="new-password">
