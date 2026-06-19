@@ -23,8 +23,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (!$user || !password_verify($password, $user["password_hash"])) {
             $response["message"] = "Invalid username/email or password.";
+            $ipAddressVal = $_SERVER["REMOTE_ADDR"] ?? "0.0.0.0";
+            $failedStmt = $conn->prepare("INSERT INTO FailedLogins (ip_address, username, attempted_at) VALUES (?, ?, NOW())");
+            $failedStmt->bind_param("ss", $ipAddressVal, $loginInput);
+            $failedStmt->execute();
+            $failedStmt->close();
         } elseif ((int) $user["is_active"] !== 1) {
             $response["message"] = "This account is inactive. Contact an administrator.";
+            $ipAddressVal = $_SERVER["REMOTE_ADDR"] ?? "0.0.0.0";
+            $failedStmt = $conn->prepare("INSERT INTO FailedLogins (ip_address, username, attempted_at) VALUES (?, ?, NOW())");
+            $failedStmt->bind_param("ss", $ipAddressVal, $loginInput);
+            $failedStmt->execute();
+            $failedStmt->close();
         } else {
             session_start();
             session_regenerate_id(true);
@@ -35,6 +45,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $updateStmt->bind_param("i", $user["user_id"]);
             $updateStmt->execute();
             $updateStmt->close();
+
+            $ipAddressVal = $_SERVER["REMOTE_ADDR"] ?? "0.0.0.0";
+            $auditStmt = $conn->prepare("INSERT INTO AuditTrail (user_id, username, action, ip_address, created_at) VALUES (?, ?, 'Login', ?, NOW())");
+            $auditStmt->bind_param("iss", $user["user_id"], $user["username"], $ipAddressVal);
+            $auditStmt->execute();
+            $auditStmt->close();
 
             $response["success"] = true;
             $response["message"] = "Login successful!";

@@ -14,13 +14,28 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
 $reportType = $_POST["report_type"] ?? "all";
 $format = $_POST["format"] ?? "csv";
-$dateFrom = $_POST["date_from"] ?? date("Y-m-d", strtotime("-30 days"));
-$dateTo = $_POST["date_to"] ?? date("Y-m-d");
+$dateFrom = $_POST["date_from"] ?? "";
+$dateTo = $_POST["date_to"] ?? "";
+$ipAddress = trim($_POST["ip_address"] ?? "");
 $userId = (int) $_SESSION["user_id"];
+$username = $_SESSION["username"] ?? "admin";
+
+if (empty($dateFrom)) {
+    $dateFrom = date("Y-m-d", strtotime("-30 days"));
+}
+if (empty($dateTo)) {
+    $dateTo = date("Y-m-d");
+}
 
 $where = ["detected_at BETWEEN ? AND ?"];
-$params = [$dateFrom, $dateTo];
+$params = [$dateFrom . " 00:00:00", $dateTo . " 23:59:59"];
 $types = "ss";
+
+if ($ipAddress !== "") {
+    $where[] = "ip_address = ?";
+    $params[] = $ipAddress;
+    $types .= "s";
+}
 
 switch ($reportType) {
     case "unresolved":
@@ -61,11 +76,16 @@ if (empty($threats)) {
     exit;
 }
 
-$fileName = "export_" . time() . "." . $format;
+$fileName = "export_" . time() . "_" . bin2hex(random_bytes(4)) . "." . $format;
 $filePath = "/exports/" . $fileName;
+$exportsDir = __DIR__ . "/../../../../exports";
+
+if (!is_dir($exportsDir)) {
+    mkdir($exportsDir, 0777, true);
+}
 
 if ($format === "csv") {
-    $csvFile = fopen(__DIR__ . "/../../../../exports/" . $fileName, "w");
+    $csvFile = fopen($exportsDir . "/" . $fileName, "w");
     fputcsv($csvFile, ["ID", "Type", "Severity", "IP Address", "Action", "Detected", "Resolved"]);
     foreach ($threats as $threat) {
         fputcsv($csvFile, [
@@ -79,17 +99,62 @@ if ($format === "csv") {
         ]);
     }
     fclose($csvFile);
+} elseif ($format === "pdf") {
+    require_once __DIR__ . "/SimplePDF.php";
+    $pdf = new SimplePDF();
+    $pdf->AddPage();
+    
+    // Header Info
+    $pdf->SetFont('Bold', 16);
+    $pdf->Cell(495, 25, "Security Threat Report", 0, 1);
+    $pdf->SetFont('Normal', 10);
+    $pdf->Cell(495, 15, "Generated: " . date("Y-m-d H:i:s") . " | Timezone: Asia/Kuala_Lumpur", 0, 1);
+    $pdf->Cell(495, 15, "Filter: Type=" . ucfirst($reportType) . " | Date Range=" . $dateFrom . " to " . $dateTo . ($ipAddress !== "" ? " | IP=" . $ipAddress : ""), 0, 1);
+    $pdf->Ln(15);
+    
+    // Table Headers
+    $pdf->SetFont('Bold', 9);
+    $pdf->Cell(35, 18, "ID", 1, 0);
+    $pdf->Cell(110, 18, "Threat Type", 1, 0);
+    $pdf->Cell(80, 18, "Severity", 1, 0);
+    $pdf->Cell(100, 18, "IP Address", 1, 0);
+    $pdf->Cell(110, 18, "Detected At", 1, 0);
+    $pdf->Cell(60, 18, "Resolved", 1, 1);
+    
+    // Table Body
+    $pdf->SetFont('Normal', 9);
+    foreach ($threats as $threat) {
+        $pdf->Cell(35, 16, $threat["threat_id"], 1, 0);
+        $pdf->Cell(110, 16, $threat["threat_type"], 1, 0);
+        $pdf->Cell(80, 16, $threat["severity"], 1, 0);
+        $pdf->Cell(100, 16, $threat["ip_address"], 1, 0);
+        $pdf->Cell(110, 16, substr($threat["detected_at"], 0, 16), 1, 0);
+        $pdf->Cell(60, 16, $threat["is_resolved"] ? "Yes" : "No", 1, 1);
+    }
+    
+    $pdfData = $pdf->Output();
+    file_put_contents($exportsDir . "/" . $fileName, $pdfData);
 } else {
-    $response["message"] = "PDF export not implemented yet. Please use CSV format.";
+    $response["message"] = "Invalid format specified.";
     echo json_encode($response);
     exit;
 }
 
+// Log to Audit Trail
+$auditAction = "Generated Export (" . strtoupper($format) . " - " . ucfirst($reportType) . ")";
+$remoteIp = $_SERVER["REMOTE_ADDR"] ?? "0.0.0.0";
+$auditStmt = $conn->prepare("INSERT INTO AuditTrail (user_id, username, action, ip_address, created_at) VALUES (?, ?, ?, ?, NOW())");
+$auditStmt->bind_param("isss", $userId, $username, $auditAction, $remoteIp);
+$auditStmt->execute();
+$auditStmt->close();
+
+// Insert Report into database
 $insert = $conn->prepare(
     "INSERT INTO Reports (report_type, report_date, date_from, date_to, file_format, generated_by, file_path)
      VALUES (?, CURDATE(), ?, ?, ?, ?, ?)"
 );
-$insert->bind_param("ssssis", $reportType, $dateFrom, $dateTo, strtoupper($format), $userId, $filePath);
+$upperFormat = strtoupper($format);
+$insert->bind_param("ssssis", $reportType, $dateFrom, $dateTo, $upperFormat, $userId, $filePath);
 $insert->execute();
 $insert->close();
 $conn->close();
@@ -98,5 +163,4 @@ $response["success"] = true;
 $response["message"] = "Export generated successfully.";
 $response["file_path"] = $filePath;
 echo json_encode($response);
-
 ?>

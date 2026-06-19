@@ -44,6 +44,16 @@ $update->execute();
 $response["success"] = $update->affected_rows > 0;
 $response["message"] = $response["success"] ? "Password updated successfully." : "Failed to update password.";
 $update->close();
+
+if ($response["success"]) {
+    $username = $_SESSION["username"] ?? "admin";
+    $ipAddressVal = $_SERVER["REMOTE_ADDR"] ?? "0.0.0.0";
+    $auditStmt = $conn->prepare("INSERT INTO AuditTrail (user_id, username, action, ip_address, created_at) VALUES (?, ?, 'Changed Password', ?, NOW())");
+    $auditStmt->bind_param("iss", $userId, $username, $ipAddressVal);
+    $auditStmt->execute();
+    $auditStmt->close();
+}
+
 $conn->close();
 
 echo json_encode($response);

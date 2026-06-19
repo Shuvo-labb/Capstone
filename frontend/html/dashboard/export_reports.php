@@ -95,6 +95,11 @@ require_once __DIR__ . "/../auth/require_login.php";
               <input type="date" name="date_to" id="dateTo">
             </label>
 
+            <label class="field">
+              <span>IP Address</span>
+              <input type="text" name="ip_address" id="ipAddress" placeholder="e.g. 192.168.1.45">
+            </label>
+
             <button type="submit" class="primary-btn">Generate Export</button>
             <p id="exportMessage" class="message" aria-live="polite"></p>
           </form>
@@ -167,7 +172,7 @@ require_once __DIR__ . "/../auth/require_login.php";
             <td>${escapeHtml(exp.file_format)}</td>
             <td>${escapeHtml(exp.date_from)} to ${escapeHtml(exp.date_to)}</td>
             <td>${escapeHtml(exp.report_date)}</td>
-            <td><a href="${escapeHtml(exp.file_path)}" class="small-btn" download>Download</a></td>
+            <td><a href="api/download_export.php?id=${exp.report_id}" class="small-btn">Download</a></td>
           `;
           tbody.appendChild(tr);
         });

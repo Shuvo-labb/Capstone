@@ -1,6 +1,3 @@
-// real_time_alerts.js — lightweight simulated real-time alerts UI
-// Keeps code simple: polls / simulates alerts and updates the UI + a small rate chart.
-
 document.addEventListener('DOMContentLoaded', () => {
   initRealtimeAlerts();
 });
@@ -8,116 +5,172 @@ document.addEventListener('DOMContentLoaded', () => {
 let rateChart = null;
 let alerts = [];
 
-function initRealtimeAlerts(){
-  // initialize chart with empty data
+async function initRealtimeAlerts() {
   const ctx = document.getElementById('rateChart');
-  if(ctx && typeof Chart !== 'undefined'){
+  if (ctx && typeof Chart !== 'undefined') {
     rateChart = new Chart(ctx.getContext('2d'), {
       type: 'line',
-      data: { labels: [], datasets: [{ label: 'Alerts/min', data: [], borderColor:'#1fa2d6', backgroundColor:'rgba(31,162,214,0.06)', fill:true }] },
-      options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} }
+      data: { labels: [], datasets: [{ label: 'Alerts/min', data: [], borderColor: '#1fa2d6', backgroundColor: 'rgba(31,162,214,0.06)', fill: true }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
     });
   }
 
-  // mock incoming alerts every 2-6 seconds
-  setInterval(() => {
-    const newAlert = generateMockAlert();
-    pushAlert(newAlert);
-  }, 3000 + Math.floor(Math.random()*3000));
+  await pollAlerts();
+  setInterval(pollAlerts, 4000);
 
-  // update counts and chart periodically
-  setInterval(() => { refreshUI(); }, 2000);
+  const ackAllBtn = document.getElementById('ackAll');
+  if (ackAllBtn) {
+    ackAllBtn.addEventListener('click', async () => {
+      if (confirm('Are you sure you want to resolve all active alerts?')) {
+        for (const a of alerts) {
+          if (!a.resolved) {
+            await resolveThreatOnServer(a.id);
+          }
+        }
+        await pollAlerts();
+      }
+    });
+  }
 
-  // quick action handlers
-  document.getElementById('ackAll').addEventListener('click', () => { alerts.forEach(a=>a.ack=true); refreshUI(); });
-  document.getElementById('clearResolved').addEventListener('click', () => { alerts = alerts.filter(a=>!a.resolved); refreshUI(); });
+  const clearResolvedBtn = document.getElementById('clearResolved');
+  if (clearResolvedBtn) {
+    clearResolvedBtn.addEventListener('click', () => {
+      alerts = alerts.filter(a => !a.resolved);
+      refreshUI();
+    });
+  }
 }
 
-function generateMockAlert(){
-  const types = ['SQL Injection','XSS','Brute Force','Malware Upload','Port Scan'];
-  const severities = ['High','Medium','Low'];
-  const ip = `192.0.2.${Math.floor(1+Math.random()*250)}`;
-  return { id:Date.now()+Math.floor(Math.random()*1000), detected_at: new Date().toISOString().replace('T',' ').slice(0,19), type: types[Math.floor(Math.random()*types.length)], severity: severities[Math.floor(Math.random()*severities.length)], ip, ack:false, resolved:false };
+async function pollAlerts() {
+  try {
+    const res = await fetch('api/get_real_time_alerts.php');
+    const data = await res.json();
+    
+    const newAlerts = data.alerts || [];
+    const oldIds = new Set(alerts.map(a => a.id));
+    
+    alerts = newAlerts;
+    refreshUI();
+    
+    newAlerts.forEach(a => {
+      if (oldIds.size > 0 && !oldIds.has(a.id)) {
+        renderAlertRow(a, true);
+      }
+    });
+  } catch (err) {
+    console.error('Failed to poll alerts', err);
+  }
 }
 
-function pushAlert(alert){
-  // keep most recent 200
-  alerts.unshift(alert);
-  if(alerts.length>200) alerts.pop();
-  // briefly flash new alert
-  renderAlertRow(alert, true);
-}
-
-function refreshUI(){
-  // update counts
-  const last5m = alerts.filter(a => { return (Date.now() - new Date(a.detected_at).getTime()) < 5*60*1000; }).length;
+function refreshUI() {
   const unresolved = alerts.filter(a => !a.resolved).length;
-  document.getElementById('alertsCount').textContent = last5m;
-  document.getElementById('unresolvedCount').textContent = unresolved;
+  
+  const alertsCountEl = document.getElementById('alertsCount');
+  if (alertsCountEl) alertsCountEl.textContent = unresolved;
 
-  // update list (limit 100 displayed)
+  const unresolvedCountEl = document.getElementById('unresolvedCount');
+  if (unresolvedCountEl) unresolvedCountEl.textContent = unresolved;
+
   const list = document.getElementById('alertsList');
-  list.innerHTML = '';
-  alerts.slice(0,100).forEach(a => renderAlertRow(a, false));
+  if (list) {
+    list.innerHTML = '';
+    alerts.forEach(a => renderAlertRow(a, false));
+  }
 
-  // update rate chart: simple sliding window of last 10 intervals
-  if(rateChart){
+  if (rateChart) {
     const now = new Date();
     const label = now.toLocaleTimeString();
-    const bucketCount = alerts.filter(a => (Date.now() - new Date(a.detected_at).getTime()) < 60*1000).length;
+    const bucketCount = alerts.filter(a => !a.resolved).length;
     const maxPoints = 10;
     rateChart.data.labels.push(label);
     rateChart.data.datasets[0].data.push(bucketCount);
-    if(rateChart.data.labels.length>maxPoints){ rateChart.data.labels.shift(); rateChart.data.datasets[0].data.shift(); }
+    if (rateChart.data.labels.length > maxPoints) {
+      rateChart.data.labels.shift();
+      rateChart.data.datasets[0].data.shift();
+    }
     rateChart.update();
   }
 }
 
-function renderAlertRow(a, flash){
+async function resolveThreatOnServer(threatId) {
+  try {
+    const res = await fetch('api/resolve_threat.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ threat_id: threatId })
+    });
+    return await res.json();
+  } catch (err) {
+    console.error('Error resolving threat', err);
+    return { success: false };
+  }
+}
+
+function renderAlertRow(a, flash) {
   const list = document.getElementById('alertsList');
-  if(!list) return;
+  if (!list) return;
+
+  if (flash) {
+    const existing = document.getElementById(`alert-row-${a.id}`);
+    if (existing) return;
+  }
+
   const row = document.createElement('div');
+  row.id = `alert-row-${a.id}`;
   row.className = 'alert-row';
+  
+  const statusHtml = a.resolved 
+    ? '<span style="color:#4ade80; font-size: 0.85rem; font-weight: bold; margin-left:10px;">Resolved</span>' 
+    : `<button class="small-btn resolve-btn" data-id="${a.id}" style="margin-left:10px;">Resolve</button>`;
+
   row.innerHTML = `<div>
-      <div><strong>${escapeHtml(a.type)}</strong></div>
+      <div><strong>${escapeHtml(a.type)}</strong> ${a.resolved ? statusHtml : ''}</div>
       <div class="meta">${escapeHtml(a.detected_at)} — ${escapeHtml(a.ip)}</div>
     </div>
     <div style="text-align:right">
       <div class="meta">${escapeHtml(a.severity)}</div>
       <div style="margin-top:6px">
-        <button class="small-btn" data-id="${a.id}" data-action="ack">Acknowledge</button>
-        <button class="small-btn" data-id="${a.id}" data-action="resolve">Resolve</button>
+        ${!a.resolved ? `<button class="small-btn resolve-btn" data-id="${a.id}">Resolve</button>` : ''}
       </div>
     </div>`;
 
-  // severity badge color
-  if(a.severity === 'High') row.querySelector('.meta').insertAdjacentHTML('beforebegin', '<div class="badge high">HIGH</div>');
-  else if(a.severity === 'Medium') row.querySelector('.meta').insertAdjacentHTML('beforebegin', '<div class="badge medium">MED</div>');
-  else row.querySelector('.meta').insertAdjacentHTML('beforebegin', '<div class="badge low">LOW</div>');
+  if (a.severity === 'High' || a.severity === 'Critical') {
+    row.querySelector('.meta').insertAdjacentHTML('beforebegin', '<div class="badge high">HIGH</div>');
+  } else if (a.severity === 'Medium') {
+    row.querySelector('.meta').insertAdjacentHTML('beforebegin', '<div class="badge medium">MED</div>');
+  } else {
+    row.querySelector('.meta').insertAdjacentHTML('beforebegin', '<div class="badge low">LOW</div>');
+  }
 
-  // attach action handlers
-  row.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', (e)=>{
+  const resolveButtons = row.querySelectorAll('.resolve-btn');
+  resolveButtons.forEach(btn => {
+    btn.addEventListener('click', async (e) => {
       const id = Number(e.currentTarget.dataset.id);
-      const action = e.currentTarget.dataset.action;
-      const idx = alerts.findIndex(x=>x.id===id);
-      if(idx===-1) return;
-      if(action==='ack') alerts[idx].ack = true;
-      if(action==='resolve') alerts[idx].resolved = true;
-      refreshUI();
+      const res = await resolveThreatOnServer(id);
+      if (res.success) {
+        const idx = alerts.findIndex(x => x.id === id);
+        if (idx !== -1) {
+          alerts[idx].resolved = 1;
+        }
+        refreshUI();
+      } else {
+        alert('Could not resolve threat.');
+      }
     });
   });
 
-  if(flash){
+  if (flash) {
     row.style.transition = 'transform 220ms ease, opacity 220ms ease';
     row.style.transform = 'translateY(-6px)';
     row.style.opacity = '0';
     list.prepend(row);
-    requestAnimationFrame(()=>{ row.style.transform='translateY(0)'; row.style.opacity='1'; });
-    setTimeout(()=> refreshUI(), 400);
+    requestAnimationFrame(() => { row.style.transform = 'translateY(0)'; row.style.opacity = '1'; });
   } else {
     list.appendChild(row);
   }
 }
 
-function escapeHtml(str){ if(typeof str !== 'string') return str; return str.replace(/[&<>\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function escapeHtml(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/[&<>\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}

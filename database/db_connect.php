@@ -12,6 +12,10 @@ if ($conn->connect_error) {
 
 $conn->set_charset("utf8mb4");
 
+// Set timezone to Kuala Lumpur
+date_default_timezone_set('Asia/Kuala_Lumpur');
+$conn->query("SET time_zone = '+08:00'");
+
 // Local development: show reset links in API responses when email is not configured.
 define("APP_DEV_MODE", true);
 

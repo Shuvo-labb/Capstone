@@ -62,10 +62,31 @@ require_once __DIR__ . "/../auth/require_login.php";
 
         <section class="section">
           <h3 style="margin-top:0">System Activities</h3>
-          <p>Content for Audit Trail will go here.</p>
+          <div class="controls" style="display:flex; gap:8px; align-items:center; margin-bottom:12px;">
+            <label class="field"><span>Filter by user</span><input type="text" id="filterUser" placeholder="username"></label>
+            <label class="field"><span>Action</span><input type="text" id="filterAction" placeholder="e.g. login"></label>
+            <button id="applyFilters" class="primary-btn">Apply</button>
+          </div>
+
+          <div style="margin-top:12px; max-height:520px; overflow:auto;">
+            <table id="logsTable" style="width:100%; border-collapse:collapse;">
+              <thead>
+                <tr>
+                  <th style="padding:10px; border-bottom:1px solid rgba(118,153,207,0.04); text-align:left;">When</th>
+                  <th style="padding:10px; border-bottom:1px solid rgba(118,153,207,0.04); text-align:left;">User</th>
+                  <th style="padding:10px; border-bottom:1px solid rgba(118,153,207,0.04); text-align:left;">Action</th>
+                  <th style="padding:10px; border-bottom:1px solid rgba(118,153,207,0.04); text-align:left;">Source IP</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td colspan="4" class="muted" style="padding:10px;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </section>
       </div> <!-- /.main-content -->
     </div> <!-- /.dashboard-layout -->
   </main>
+  <script src="../../js/dashboard/activity_logs.js" defer></script>
 </body>
 </html>

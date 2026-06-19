@@ -1,65 +1,94 @@
-// statistics.js — simple charts for the Statistics page using Chart.js
-// This file uses mock data; later it should call backend APIs to fetch real stats.
-
 document.addEventListener('DOMContentLoaded', () => {
   initStatistics();
 });
 
 let timeSeriesChart, typePieChart, topIpsChart;
 
-function initStatistics(){
-  // mock aggregated data
-  const stats = {
-    totalThreats: 124,
-    uniqueIps: 37,
-    avgPerDay: 5.2,
-    timeseries: [
-      {date:'2026-05-18', count:3},{date:'2026-05-19', count:4},{date:'2026-05-20', count:6},{date:'2026-05-21', count:8},{date:'2026-05-22', count:10},{date:'2026-05-23', count:12},{date:'2026-05-24', count:20}
-    ],
-    types: { 'SQL Injection': 12, 'XSS': 28, 'Brute Force': 40, 'Malware': 8, 'Other': 36 },
-    topIps: { '192.0.2.10': 8, '198.51.100.42':6, '203.0.113.5':5 }
-  };
+async function initStatistics() {
+  try {
+    const res = await fetch('api/get_statistics.php');
+    const stats = await res.json();
 
-  document.getElementById('totalThreatsStat').textContent = stats.totalThreats;
-  document.getElementById('uniqueIps').textContent = stats.uniqueIps;
-  document.getElementById('avgPerDay').textContent = stats.avgPerDay;
+    document.getElementById('totalThreatsStat').textContent = stats.totalThreats;
+    document.getElementById('uniqueIps').textContent = stats.uniqueIps;
+    document.getElementById('avgPerDay').textContent = stats.avgPerDay;
 
-  renderTimeSeries(stats.timeseries);
-  renderTypePie(stats.types);
-  renderTopIps(stats.topIps);
+    renderTimeSeries(stats.timeseries || []);
+    renderTypePie(stats.types || {});
+    renderTopIps(stats.topIps || {});
+  } catch (err) {
+    console.error('Failed to load statistics', err);
+  }
 
-  document.getElementById('applyFilters').addEventListener('click', () => {
-    // For now, filters don't change mock data — placeholder for real API calls
-    alert('Filters applied (mock). Implement backend call to fetch filtered data.');
+  const applyBtn = document.getElementById('applyFilters');
+  if (applyBtn) {
+    applyBtn.addEventListener('click', () => {
+      initStatistics();
+    });
+  }
+}
+
+function renderTimeSeries(points) {
+  if (typeof Chart === 'undefined') return;
+  const labels = points.map(p => p.date);
+  const data = points.map(p => p.count);
+  const ctx = document.getElementById('timeSeriesChart');
+  if (!ctx) return;
+  if (timeSeriesChart) timeSeriesChart.destroy();
+  timeSeriesChart = new Chart(ctx.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Threats',
+        data,
+        borderColor: '#4cc9f0',
+        backgroundColor: 'rgba(76,201,240,0.08)',
+        fill: true,
+        tension: 0.2
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
   });
 }
 
-function renderTimeSeries(points){
-  if(typeof Chart === 'undefined') return;
-  const labels = points.map(p=>p.date);
-  const data = points.map(p=>p.count);
-  const ctx = document.getElementById('timeSeriesChart');
-  if(!ctx) return;
-  if(timeSeriesChart) timeSeriesChart.destroy();
-  timeSeriesChart = new Chart(ctx.getContext('2d'), { type:'line', data:{ labels, datasets:[{ label:'Threats', data, borderColor:'#4cc9f0', backgroundColor:'rgba(76,201,240,0.08)', fill:true, tension:0.2 }] }, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}} });
-}
-
-function renderTypePie(types){
-  if(typeof Chart === 'undefined') return;
+function renderTypePie(types) {
+  if (typeof Chart === 'undefined') return;
   const labels = Object.keys(types);
-  const data = labels.map(l=>types[l]);
+  const data = labels.map(l => types[l]);
   const ctx = document.getElementById('typePie');
-  if(!ctx) return;
-  if(typePieChart) typePieChart.destroy();
-  typePieChart = new Chart(ctx.getContext('2d'), { type:'doughnut', data:{ labels, datasets:[{ data, backgroundColor:['#ff6b6b','#f6c85f','#1fa2d6','#9ef0ff','#b8f5ff'] }] }, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}} });
+  if (!ctx) return;
+  if (typePieChart) typePieChart.destroy();
+  typePieChart = new Chart(ctx.getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: labels.length ? labels : ['No Data'],
+      datasets: [{
+        data: data.length ? data : [1],
+        backgroundColor: ['#ff6b6b', '#f6c85f', '#1fa2d6', '#9ef0ff', '#b8f5ff']
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+  });
 }
 
-function renderTopIps(topIps){
-  if(typeof Chart === 'undefined') return;
+function renderTopIps(topIps) {
+  if (typeof Chart === 'undefined') return;
   const labels = Object.keys(topIps);
-  const data = labels.map(l=>topIps[l]);
+  const data = labels.map(l => topIps[l]);
   const ctx = document.getElementById('topIpsChart');
-  if(!ctx) return;
-  if(topIpsChart) topIpsChart.destroy();
-  topIpsChart = new Chart(ctx.getContext('2d'), { type:'bar', data:{ labels, datasets:[{ label:'Events', data, backgroundColor:'#1fa2d6' }] }, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}} });
+  if (!ctx) return;
+  if (topIpsChart) topIpsChart.destroy();
+  topIpsChart = new Chart(ctx.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Events',
+        data,
+        backgroundColor: '#1fa2d6'
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+  });
 }
