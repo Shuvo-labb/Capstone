@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../auth/require_login.php";
+require_once __DIR__ . "/../auth/global_security.php";
 ?>
 <!doctype html>
 <html lang="en">
@@ -89,13 +90,16 @@ require_once __DIR__ . "/../auth/require_login.php";
 
         <section class="section">
           <h3 style="margin-top:0">XSS Attempts</h3>
+          <div style="margin-bottom:12px" class="controls">
+            <button id="deleteResolvedXss" class="primary-btn" style="background:#ff4757">Delete All Resolved</button>
+          </div>
           <div style="overflow:auto">
             <table>
               <thead>
-                <tr><th>Severity</th><th>IP Address</th><th>Detected</th><th>Action</th><th>Status</th></tr>
+                <tr><th>Severity</th><th>IP Address</th><th>Detected</th><th>Action</th><th>Status</th><th>Actions</th></tr>
               </thead>
               <tbody id="xssTable">
-                <tr><td colspan="5" class="muted">Loading...</td></tr>
+                <tr><td colspan="6" class="muted">Loading...</td></tr>
               </tbody>
             </table>
           </div>
@@ -132,6 +136,9 @@ require_once __DIR__ . "/../auth/require_login.php";
             <td>${escapeHtml(t.detected_at)}</td>
             <td>${escapeHtml(t.action_taken || 'Flagged')}</td>
             <td>${t.is_resolved ? '<span style="color:#4ade80">Resolved</span>' : '<span style="color:#ff6b6b">Open</span>'}</td>
+            <td>
+              <button class="small-btn" onclick="deleteThreat(${t.threat_id}, '${t.source || 'threats'}')" style="background:#ff4757;color:white;padding:4px 8px;font-size:0.8rem">Delete</button>
+            </td>
           `;
           tbody.appendChild(tr);
         });
@@ -150,6 +157,52 @@ require_once __DIR__ . "/../auth/require_login.php";
       if (typeof str !== 'string') return str;
       return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
     }
+
+    // Delete individual threat
+    async function deleteThreat(threatId, source) {
+      if (!confirm('Are you sure you want to delete this threat?')) return;
+      
+      try {
+        const res = await fetch('api/delete_threat.php', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({threat_id: threatId, source: source})
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('Threat deleted successfully');
+          location.reload();
+        } else {
+          alert('Failed to delete threat: ' + data.message);
+        }
+      } catch (err) {
+        console.error('Delete failed', err);
+        alert('Failed to delete threat');
+      }
+    }
+
+    // Delete all resolved threats
+    document.getElementById('deleteResolvedXss').addEventListener('click', async () => {
+      if (!confirm('Are you sure you want to delete all resolved XSS threats? This action cannot be undone.')) return;
+      
+      try {
+        const res = await fetch('api/delete_resolved.php', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({source: 'threats'})
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert(`Deleted ${data.deleted_count} resolved threat(s)`);
+          location.reload();
+        } else {
+          alert(data.message);
+        }
+      } catch (err) {
+        console.error('Bulk delete failed', err);
+        alert('Failed to delete resolved threats');
+      }
+    });
   </script>
 </body>
 </html>

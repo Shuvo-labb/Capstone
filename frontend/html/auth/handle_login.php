@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../../../database/db_connect.php";
+require_once __DIR__ . "/security_filter.php";
 
 header("Content-Type: application/json");
 
@@ -12,6 +13,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($loginInput === "" || $password === "") {
         $response["message"] = "Please enter both username and password.";
     } else {
+        // SECURITY FILTER: Check for malicious inputs BEFORE credential validation
+        $usernameAttack = detect_and_log_attack($loginInput, "login.php", $loginInput);
+        $passwordAttack = detect_and_log_attack($password, "login.php", $loginInput);
+        
+        if ($usernameAttack || $passwordAttack) {
+            // Attack detected - immediately kill the request
+            $response["message"] = "Access Denied: Malicious activity flagged.";
+            $response["attack_detected"] = true;
+            $response["attack_type"] = $usernameAttack ? $usernameAttack['attack_type'] : $passwordAttack['attack_type'];
+            echo json_encode($response);
+            exit;
+        }
         $stmt = $conn->prepare(
             "SELECT user_id, username, password_hash, is_active FROM Users WHERE username = ? OR email = ?"
         );
@@ -28,6 +41,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $failedStmt->bind_param("ss", $ipAddressVal, $loginInput);
             $failedStmt->execute();
             $failedStmt->close();
+            
+            // Check for brute force pattern
+            if (detect_brute_force($ipAddressVal, 5)) {
+                log_brute_force($ipAddressVal, $loginInput);
+            }
         } elseif ((int) $user["is_active"] !== 1) {
             $response["message"] = "This account is inactive. Contact an administrator.";
             $ipAddressVal = $_SERVER["REMOTE_ADDR"] ?? "0.0.0.0";
@@ -35,6 +53,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $failedStmt->bind_param("ss", $ipAddressVal, $loginInput);
             $failedStmt->execute();
             $failedStmt->close();
+            
+            // Check for brute force pattern
+            if (detect_brute_force($ipAddressVal, 5)) {
+                log_brute_force($ipAddressVal, $loginInput);
+            }
         } else {
             session_start();
             session_regenerate_id(true);

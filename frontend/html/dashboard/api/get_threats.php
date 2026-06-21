@@ -28,6 +28,7 @@ $result = $stmt->get_result();
 
 $threats = [];
 while ($row = $result->fetch_assoc()) {
+    $row["source"] = "threats";
     $threats[] = $row;
 }
 
