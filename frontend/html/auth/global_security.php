@@ -1,37 +1,22 @@
 <?php
-/**
- * Global Security Filter
- * 
- * This file should be included at the top of all dashboard pages
- * to detect and block URL-based attacks (GET parameters)
- */
-
+// Start PHP code block
+// Include security_filter.php to access parameter scanning functions
 require_once __DIR__ . "/security_filter.php";
-
-// Check all GET and POST parameters for malicious input
+// Scan all GET and POST parameters for threat patterns using the requested URI as context
 $attack = check_all_parameters($_SERVER['REQUEST_URI']);
-
+// Check if an attack was detected
 if ($attack) {
-    // Attack detected - redirect to warning page
+    // URL-encode the attack type for redirection query
     $attack_type = urlencode($attack['attack_type']);
+    // URL-encode the attack payload for redirection query
     $payload = urlencode($attack['payload']);
-    
-    // Determine correct path based on current script location
+    // Extract script name path of current request execution context
     $script_path = $_SERVER['SCRIPT_NAME'];
-    
-    if (strpos($script_path, '/dashboard/') !== false) {
-        // From dashboard pages: go up one level, then to auth
-        $warning_path = '../auth/attack_warning.php';
-    } elseif (strpos($script_path, '/auth/') !== false) {
-        // From auth pages: same directory
-        $warning_path = 'attack_warning.php';
-    } else {
-        // From landing page or other: go to auth folder
-        $warning_path = 'auth/attack_warning.php';
-    }
-    
+    // Determine warning page path based on whether request was routed inside dashboard
+    $warning_path = (strpos($script_path, '/dashboard/') !== false) ? '../auth/attack_warning.php' : ((strpos($script_path, '/auth/') !== false) ? 'attack_warning.php' : 'auth/attack_warning.php');
+    // Set response header to redirect client to warning path with details
     header("Location: $warning_path?type=$attack_type&payload=$payload");
+    // Terminate script execution immediately
     exit;
 }
-
 ?>
