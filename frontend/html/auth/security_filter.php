@@ -1,273 +1,72 @@
 <?php
-/**
- * Security Filter - Real-Time Threat Interception and Automated Logging
- * 
- * This helper detects malicious input patterns (SQLi, XSS, Directory Traversal)
- * and logs them to the AttackEvents table before allowing further processing.
- */
-
+// Start PHP code block
+// Include the database connection file
 require_once __DIR__ . "/../../../database/db_connect.php";
+// Include the email helper class file
+require_once __DIR__ . "/../includes/EmailHelper.php";
 
-/**
- * SQL Injection Detection Patterns
- * High severity: Classic SQLi bypass techniques
- * Medium severity: Suspicious SQL keywords
- */
-$SQLI_PATTERNS = [
-    // High severity - Classic bypass patterns
-    "/'\\s*OR\\s*'\\d+'\\s*=\\s*'\\d+/i",
-    "/'\\s*OR\\s*true\\s*--/i",
-    "/'\\s*OR\\s*1\\s*=\\s*1/i",
-    '/"\\s*OR\\s*"\\d+"\\s*=\\s*"\\d+/i',
-    '/"\\s*OR\\s*true\\s*--/i',
-    '/"\\s*OR\\s*1\\s*=\\s*1/i',
-    "/'\\s*;\\s*DROP/i",
-    '/"\\s*;\\s*DROP/i',
-    "/'\\s*UNION\\s+SELECT/i",
-    '/"\\s*UNION\\s+SELECT/i',
-    "/\\bUNION\\s+ALL\\s+SELECT\\b/i",
-    "/'\\s*OR\\s*\\d+\\s*=\\s*\\d+/i",
-    '/"\\s*OR\\s*\\d+\\s*=\\s*\\d+/i',
-    "/'\\s*AND\\s*\\d+\\s*=\\s*\\d+/i",
-    '/"\\s*AND\\s*\\d+\\s*=\\s*\\d+/i',
-    "/'\\s*--/i",
-    '/"\\s*--/i',
-    "/'\\s*#/i",
-    '/"\\s*#/i',
-    "/'\\s*\\/\\*/i",
-    '/"\\s*\\/\\*/i',
-    // Medium severity - Suspicious SQL keywords
-    "/\\b(SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|EXEC|EXECUTE)\\b/i",
-    "/\\b(WHERE|HAVING|GROUP BY|ORDER BY)\\s+\\d+/i",
-    "/\\b(OR|AND)\\s+\\d+\\s*[=<>!]/i",
-    "/\\b(OR|AND)\\s+['\"]\\w+['\"]\\s*[=<>!]/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*LIKE/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*IN\\s*\\(/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*BETWEEN/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*IS\\s*(NOT\\s*)?(NULL|TRUE|FALSE)/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*REGEXP/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*RLIKE/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*SOUNDS\\s*LIKE/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*NOT\\s*LIKE/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*NOT\\s*IN/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*NOT\\s*BETWEEN/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*NOT\\s*REGEXP/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*NOT\\s*RLIKE/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*NOT\\s*SOUNDS\\s*LIKE/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*NOT\\s*IS/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*NOT\\s*REGEXP/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*NOT\\s*RLIKE/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*NOT\\s*SOUNDS\\s*LIKE/i",
-    "/\\b(OR|AND)\\s+\\w+\\s*NOT\\s*IS/i"
-];
+// Define combined regular expression patterns for SQL Injection checks
+$SQLI_HIGH_PAT = "/['\"][\\s]*OR[\\s]*(?:'?\\d+'?[\\s]*=[\\s]*'?\\d+|true[\\s]*--|1[\\s]*=[\\s]*1|\\d+[\\s]*=[\\s]*\\d+)|['\"][\\s]*;[\\s]*DROP|['\"][\\s]*UNION[\\s]+SELECT|\\bUNION[\\s]+ALL[\\s]+SELECT|['\"][\\s]*AND[\\s]*\\d+[\\s]*=[\\s]*\\d+|['\"][\\s]*(?:--|#|\\/\\*)/i";
+// Define medium-severity SQL injection keywords check pattern
+$SQLI_MED_PAT = "/\\b(?:SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|EXEC|EXECUTE)\\b|\\b(?:WHERE|HAVING|GROUP BY|ORDER BY)\\s+\\d+|\\b(?:OR|AND)\\s+(?:\\d+|['\"]\\w+['\"])\\s*[=<>!]|\\b(?:OR|AND)\\s+\\w+\\s+(?:LIKE|IN|BETWEEN|IS|REGEXP|RLIKE)/i";
 
-/**
- * XSS Detection Patterns
- * High severity: Script execution attempts
- * Medium severity: Suspicious HTML/JavaScript patterns
- */
-$XSS_PATTERNS = [
-    // High severity - Script execution
-    "/<script[^>]*>.*?<\\/script>/is",
-    "/<script[^>]*>/i",
-    "/javascript:/i",
-    "/onerror\\s*=/i",
-    "/onload\\s*=/i",
-    "/onclick\\s*=/i",
-    "/onmouseover\\s*=/i",
-    "/onfocus\\s*=/i",
-    "/onblur\\s*=/i",
-    "/onchange\\s*=/i",
-    "/onsubmit\\s*=/i",
-    "/onreset\\s*=/i",
-    "/onkeydown\\s*=/i",
-    "/onkeyup\\s*=/i",
-    "/onkeypress\\s*=/i",
-    "/onmousedown\\s*=/i",
-    "/onmouseup\\s*=/i",
-    "/onmousemove\\s*=/i",
-    "/onmouseout\\s*=/i",
-    "/onmouseenter\\s*=/i",
-    "/onmouseleave\\s*=/i",
-    "/ondblclick\\s*=/i",
-    "/oncontextmenu\\s*=/i",
-    "/onwheel\\s*=/i",
-    "/onscroll\\s*=/i",
-    "/oncopy\\s*=/i",
-    "/oncut\\s*=/i",
-    "/onpaste\\s*=/i",
-    "/onbeforeunload\\s*=/i",
-    "/onunload\\s*=/i",
-    "/onresize\\s*=/i",
-    "/onhashchange\\s*=/i",
-    "/onpopstate\\s*=/i",
-    "/onpageshow\\s*=/i",
-    "/onpagehide\\s*=/i",
-    "/onmessage\\s*=/i",
-    "/onerror\\s*=/i",
-    "/onoffline\\s*=/i",
-    "/ononline\\s*=/i",
-    "/onstorage\\s*=/i",
-    "/ontoggle\\s*=/i",
-    "/onanimationend\\s*=/i",
-    "/onanimationiteration\\s*=/i",
-    "/onanimationstart\\s*=/i",
-    "/ontransitionend\\s*=/i",
-    "/onended\\s*=/i",
-    "/onpause\\s*=/i",
-    "/onplay\\s*=/i",
-    "/onplaying\\s*=/i",
-    "/onseeked\\s*=/i",
-    "/onseeking\\s*=/i",
-    "/onstalled\\s*=/i",
-    "/onsuspend\\s*=/i",
-    "/ontimeupdate\\s*=/i",
-    "/onvolumechange\\s*=/i",
-    "/onwaiting\\s*=/i",
-    "/oncanplay\\s*=/i",
-    "/oncanplaythrough\\s*=/i",
-    "/ondurationchange\\s*=/i",
-    "/onloadeddata\\s*=/i",
-    "/onloadedmetadata\\s*=/i",
-    "/onloadstart\\s*=/i",
-    "/onprogress\\s*=/i",
-    "/onratechange\\s*=/i",
-    "/onseeked\\s*=/i",
-    "/onseeking\\s*=/i",
-    "/onstalled\\s*=/i",
-    "/onsuspend\\s*=/i",
-    "/ontimeupdate\\s*=/i",
-    "/onvolumechange\\s*=/i",
-    "/onwaiting\\s*=/i",
-    // Medium severity - Suspicious HTML/JavaScript
-    "/<iframe[^>]*>/i",
-    "/<object[^>]*>/i",
-    "/<embed[^>]*>/i",
-    "/<img[^>]*onerror/i",
-    "/<img[^>]*onload/i",
-    "/<body[^>]*onload/i",
-    "/<body[^>]*onerror/i",
-    "/<input[^>]*onfocus/i",
-    "/<input[^>]*onblur/i",
-    "/<input[^>]*onchange/i",
-    "/<input[^>]*onclick/i",
-    "/<form[^>]*onsubmit/i",
-    "/<a[^>]*onclick/i",
-    "/<a[^>]*onmouseover/i",
-    "/<div[^>]*onclick/i",
-    "/<div[^>]*onmouseover/i",
-    "/<svg[^>]*onload/i",
-    "/<svg[^>]*onerror/i",
-    "/eval\\s*\\(/i",
-    "/document\\.write/i",
-    "/document\\.cookie/i",
-    "/window\\.location/i",
-    "/window\\.open/i",
-    "/alert\\s*\\(/i",
-    "/confirm\\s*\\(/i",
-    "/prompt\\s*\\(/i",
-    "/setTimeout\\s*\\(/i",
-    "/setInterval\\s*\\(/i",
-    "/Function\\s*\\(/i",
-    "/fromCharCode/i",
-    "/String\\.fromCharCode/i",
-    "/atob\\s*\\(/i",
-    "/btoa\\s*\\(/i",
-    "/innerHTML\\s*=/i",
-    "/outerHTML\\s*=/i",
-    "/insertAdjacentHTML/i",
-    "/\\.html\\s*=/i",
-    "/\\.text\\s*=/i",
-    "/\\.textContent\\s*=/i"
-];
+// Define high-severity XSS regex pattern matching script blocks or event triggers
+$XSS_HIGH_PAT = "/<script[^>]*>.*?<\\/script>|<script[^>]*>|javascript:|on\\w+\\s*=/is";
+// Define medium-severity XSS regex pattern matching dangerous tags or function calls
+$XSS_MED_PAT = "/<(?:iframe|object|embed|img|body|input|form|a|div|svg)\\b|eval\\s*\\(|document\\.(?:write|cookie)|window\\.(?:location|open)|(?:alert|confirm|prompt|setTimeout|setInterval|Function|atob|btoa)\\s*\\(|String\\.fromCharCode|innerHTML|outerHTML/i";
 
-/**
- * Directory Traversal Detection Patterns
- */
-$DIR_TRAVERSAL_PATTERNS = [
-    "/\\.\\.\\//",
-    "/\\.\\.\\\\/",
-    "/\\.\\.\\.\\//",
-    "/\\.\\.\\.\\\\/",
-    "/%2e%2e%2f/i",
-    "/%2e%2e%5c/i",
-    "/%252e%252e%252f/i",
-    "/%252e%252e%255c/i",
-    "/\\.\\.\\/%00/",
-    "/\\.\\.\\\\%00/",
-    "/etc\\/passwd/i",
-    "/etc\\/shadow/i",
-    "/windows\\/system32/i",
-    "/boot\\.ini/i",
-    "/win\\.ini/i",
-    "/proc\\/self/i",
-    "/usr\\/bin/i",
-    "/usr\\/sbin/i",
-    "/var\\/log/i",
-    "/etc\\/hosts/i",
-    "/root\\/.ssh/i",
-    "/home\\/.ssh/i"
-];
+// Define Directory Traversal regex pattern matching system paths and dot-slash sequences
+$DIR_TRAVERSAL_PAT = "/\\.\\.\\/|\\.\\.\\\\|etc\\/(?:passwd|shadow)|windows\\/system32|boot\\.ini|win\\.ini|proc\\/self|usr\\/s?bin|var\\/log|etc\\/hosts|root\\/\\.ssh/i";
 
-/**
- * Detect and log attack from input string
- * 
- * @param string $input_string The input string to analyze
- * @param string $source_context The context (e.g., 'login', 'search', 'comment')
- * @param string $attempted_username Optional username from the attempt
- * @return array|false Returns attack details if detected, false if clean
- */
+// Declare function to detect input attack and record to log
 function detect_and_log_attack($input_string, $source_context, $attempted_username = null) {
-    global $SQLI_PATTERNS, $XSS_PATTERNS, $DIR_TRAVERSAL_PATTERNS;
-    
+    // Import global variables into local function scope
+    global $SQLI_HIGH_PAT, $SQLI_MED_PAT, $XSS_HIGH_PAT, $XSS_MED_PAT, $DIR_TRAVERSAL_PAT;
+    // Set default value of attack type as null
     $attack_type = null;
+    // Set default attack severity as Medium
     $severity = 'Medium';
-    
-    // Check for SQL Injection
-    foreach ($SQLI_PATTERNS as $pattern) {
-        if (preg_match($pattern, $input_string)) {
-            $attack_type = 'SQL Injection';
-            // Determine severity based on pattern complexity
-            if (stripos($pattern, "UNION") !== false || 
-                stripos($pattern, "DROP") !== false ||
-                stripos($pattern, "OR") !== false) {
-                $severity = 'High';
-            }
-            break;
-        }
+    // Run SQL Injection high severity check
+    if (preg_match($SQLI_HIGH_PAT, $input_string)) {
+        // Set threat type to SQL Injection
+        $attack_type = 'SQL Injection';
+        // Upgrade severity level to High
+        $severity = 'High';
+    // Run SQL Injection medium severity check
+    } elseif (preg_match($SQLI_MED_PAT, $input_string)) {
+        // Set threat type to SQL Injection
+        $attack_type = 'SQL Injection';
+    // Run XSS high severity check
+    } elseif (preg_match($XSS_HIGH_PAT, $input_string)) {
+        // Set threat type to XSS
+        $attack_type = 'XSS';
+        // Upgrade severity level to High
+        $severity = 'High';
+    // Run XSS medium severity check
+    } elseif (preg_match($XSS_MED_PAT, $input_string)) {
+        // Set threat type to XSS
+        $attack_type = 'XSS';
+    // Run Directory Traversal check
+    } elseif (preg_match($DIR_TRAVERSAL_PAT, $input_string)) {
+        // Set threat type to Directory Traversal
+        $attack_type = 'Directory Traversal';
+        // Upgrade severity level to High
+        $severity = 'High';
     }
-    
-    // Check for XSS
-    if (!$attack_type) {
-        foreach ($XSS_PATTERNS as $pattern) {
-            if (preg_match($pattern, $input_string)) {
-                $attack_type = 'XSS';
-                // Determine severity based on pattern complexity
-                if (stripos($pattern, "script") !== false || 
-                    stripos($pattern, "javascript:") !== false ||
-                    stripos($pattern, "onerror") !== false ||
-                    stripos($pattern, "onload") !== false) {
-                    $severity = 'High';
-                }
-                break;
-            }
-        }
-    }
-    
-    // Check for Directory Traversal
-    if (!$attack_type) {
-        foreach ($DIR_TRAVERSAL_PATTERNS as $pattern) {
-            if (preg_match($pattern, $input_string)) {
-                $attack_type = 'Directory Traversal';
-                $severity = 'High';
-                break;
-            }
-        }
-    }
-    
-    // If attack detected, log to database
+    // Check if any attack pattern was matched
     if ($attack_type) {
+        // Record the event details into database
         log_attack_event($attack_type, $input_string, $source_context, $attempted_username);
+        // Check if attack severity is high
+        if ($severity === 'High') {
+            // Instantiate a new EmailHelper object
+            $emailHelper = new EmailHelper();
+            // Obtain client IP address or use default
+            $source_ip = $_SERVER["REMOTE_ADDR"] ?? "0.0.0.0";
+            // Dispatch notification alert email to administrator
+            $emailHelper->sendAttackAlert($attack_type, $source_ip, $input_string, $source_context);
+        }
+        // Return structured details of intercepted attack
         return [
             'attack_type' => $attack_type,
             'severity' => $severity,
@@ -275,55 +74,51 @@ function detect_and_log_attack($input_string, $source_context, $attempted_userna
             'source_context' => $source_context
         ];
     }
-    
+    // Return false indicating input is clean
     return false;
 }
 
-/**
- * Check all GET and POST parameters for malicious input
- * 
- * @param string $source_context The context (e.g., 'dashboard', 'api')
- * @return array|false Returns attack details if detected, false if clean
- */
+// Check all GET and POST request parameters for attacks
 function check_all_parameters($source_context) {
-    // Check GET parameters
+    // Loop through GET variables
     foreach ($_GET as $key => $value) {
+        // Confirm variable contains a string
         if (is_string($value)) {
+            // Perform attack analysis on GET value
             $attack = detect_and_log_attack($value, $source_context . " (GET: $key)");
+            // Check if attack was identified
             if ($attack) {
+                // Return first detected attack details
                 return $attack;
             }
         }
     }
-    
-    // Check POST parameters
+    // Loop through POST variables
     foreach ($_POST as $key => $value) {
+        // Confirm variable contains a string
         if (is_string($value)) {
+            // Perform attack analysis on POST value
             $attack = detect_and_log_attack($value, $source_context . " (POST: $key)");
+            // Check if attack was identified
             if ($attack) {
+                // Return first detected attack details
                 return $attack;
             }
         }
     }
-    
+    // Return false indicating clean input
     return false;
 }
 
-/**
- * Log attack event to database
- * 
- * @param string $attack_type Type of attack
- * @param string $payload The malicious payload
- * @param string $target_endpoint The endpoint being attacked
- * @param string $attempted_username Optional username from attempt
- */
+// Save attack record into database
 function log_attack_event($attack_type, $payload, $target_endpoint, $attempted_username = null) {
+    // Import database connection object
     global $conn;
-    
+    // Get client remote IP or set default
     $source_ip = $_SERVER["REMOTE_ADDR"] ?? "0.0.0.0";
+    // Get browser user agent or set default
     $user_agent = $_SERVER["HTTP_USER_AGENT"] ?? "Unknown";
-    
-    // Ensure AttackEvents table exists
+    // Construct database table creation query if missing
     $create_table = "CREATE TABLE IF NOT EXISTS AttackEvents (
         attack_id INT(11) AUTO_INCREMENT PRIMARY KEY,
         source_ip VARCHAR(45) NOT NULL,
@@ -337,64 +132,41 @@ function log_attack_event($attack_type, $payload, $target_endpoint, $attempted_u
         INDEX idx_source_ip (source_ip),
         INDEX idx_created_at (created_at)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
-    
+    // Execute table creation query
     $conn->query($create_table);
-    
-    // Insert attack event
-    $stmt = $conn->prepare(
-        "INSERT INTO AttackEvents (source_ip, attack_type, payload, target_endpoint, attempted_username, user_agent)
-         VALUES (?, ?, ?, ?, ?, ?)"
-    );
-    
-    $stmt->bind_param("ssssss", 
-        $source_ip, 
-        $attack_type, 
-        $payload, 
-        $target_endpoint, 
-        $attempted_username, 
-        $user_agent
-    );
-    
+    // Prepare SQL insert statement for logging attack event
+    $stmt = $conn->prepare("INSERT INTO AttackEvents (source_ip, attack_type, payload, target_endpoint, attempted_username, user_agent) VALUES (?, ?, ?, ?, ?, ?)");
+    // Bind input values safely to sql statement parameters
+    $stmt->bind_param("ssssss", $source_ip, $attack_type, $payload, $target_endpoint, $attempted_username, $user_agent);
+    // Execute prepared SQL statement
     $stmt->execute();
+    // Close active prepared statement object
     $stmt->close();
 }
 
-/**
- * Check for brute force patterns (multiple failed attempts from same IP)
- * 
- * @param string $ip_address The IP address to check
- * @param int $threshold Number of attempts to consider as brute force
- * @return bool True if brute force detected
- */
+// Check recent brute force occurrences count from IP
 function detect_brute_force($ip_address, $threshold = 5) {
+    // Import active database connection object
     global $conn;
-    
-    // Check for recent failed attempts from this IP
-    $stmt = $conn->prepare(
-        "SELECT COUNT(*) as attempt_count 
-         FROM AttackEvents 
-         WHERE source_ip = ? 
-         AND attack_type = 'Brute Force' 
-         AND created_at > DATE_SUB(NOW(), INTERVAL 15 MINUTE)"
-    );
-    
+    // Prepare statement to query failed login attempts within last 15 minutes
+    $stmt = $conn->prepare("SELECT COUNT(*) as attempt_count FROM AttackEvents WHERE source_ip = ? AND attack_type = 'Brute Force' AND created_at > DATE_SUB(NOW(), INTERVAL 15 MINUTE)");
+    // Bind current client IP value to statement
     $stmt->bind_param("s", $ip_address);
+    // Execute query statement
     $stmt->execute();
+    // Get database query result set
     $result = $stmt->get_result();
+    // Fetch result row as associative array
     $row = $result->fetch_assoc();
+    // Close prepared statement object
     $stmt->close();
-    
+    // Return true if counted attempts are greater than or equal to threshold
     return ($row['attempt_count'] >= $threshold);
 }
 
-/**
- * Log brute force attempt
- * 
- * @param string $ip_address The IP address
- * @param string $attempted_username Optional username
- */
+// Record a new brute force attempt event
 function log_brute_force($ip_address, $attempted_username = null) {
+    // Log brute force type event via log_attack_event helper function
     log_attack_event('Brute Force', 'Multiple failed login attempts', 'login.php', $attempted_username);
 }
-
 ?>

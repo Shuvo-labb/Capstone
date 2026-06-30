@@ -1,191 +1,105 @@
 <?php
+// Start PHP code block
+// Include database connection file
 require_once __DIR__ . "/../../../../database/db_connect.php";
+// Include login verification guard
 require_once __DIR__ . "/../../auth/require_login.php";
 
+// Set response content type header to JSON
 header("Content-Type: application/json");
 
-// Only allow POST requests
-if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    http_response_code(405);
+// Read and decode incoming raw JSON payload as associative array
+$input = json_decode(file_get_contents("php://input"), true);
+// Retrieve current password input parameter
+$currentPassword = $input["current_password"] ?? "";
+// Retrieve new password input parameter
+$newPassword = $input["new_password"] ?? "";
 
-    echo json_encode([
-        "success" => false,
-        "message" => "Method not allowed."
-    ]);
+// Initialize default response payload array
+$response = ["success" => false, "message" => ""];
 
-    exit;
-}
-
-// Accept JSON request from JavaScript fetch()
-// Also supports normal HTML form submission if needed later.
-$contentType = $_SERVER["CONTENT_TYPE"] ?? "";
-
-if (strpos($contentType, "application/json") !== false) {
-    $input = json_decode(file_get_contents("php://input"), true);
-
-    if (!is_array($input)) {
-        $input = [];
-    }
-} else {
-    $input = $_POST;
-}
-
-$currentPassword = trim($input["current_password"] ?? "");
-$newPassword = trim($input["new_password"] ?? "");
-$confirmPassword = trim($input["confirm_password"] ?? "");
-
-// Function to return JSON and stop the script
-function sendResponse($success, $message, $statusCode = 200)
-{
-    http_response_code($statusCode);
-
-    echo json_encode([
-        "success" => $success,
-        "message" => $message
-    ]);
-
-    exit;
-}
-
-// Check login session
-if (empty($_SESSION["user_id"])) {
-    sendResponse(false, "Your session has expired. Please log in again.", 401);
-}
-
-// Check all fields
+// Check if any of the password inputs are empty
 if ($currentPassword === "" || $newPassword === "") {
-    sendResponse(false, "Please fill in all required fields.", 400);
+    // Set error message for missing fields
+    $response["message"] = "Please fill in all fields.";
+    // Output JSON-encoded response
+    echo json_encode($response);
+    // Terminate script execution
+    exit;
 }
 
-// Confirm password is only required if your HTML sends it
-if ($confirmPassword !== "" && $newPassword !== $confirmPassword) {
-    sendResponse(false, "New password and confirmation password do not match.", 400);
-}
-
-// Do not allow spaces-only password
-if (preg_match('/^\s+$/', $newPassword)) {
-    sendResponse(false, "Password cannot contain only spaces.", 400);
-}
-
-// Password requirements
+// Verify that the new password is at least 8 characters long
 if (strlen($newPassword) < 8) {
-    sendResponse(false, "New password must be at least 8 characters long.", 400);
+    // Set error message for short password
+    $response["message"] = "New password must be at least 8 characters.";
+    // Output JSON-encoded response
+    echo json_encode($response);
+    // Terminate script execution
+    exit;
 }
 
-if (!preg_match('/[A-Z]/', $newPassword)) {
-    sendResponse(false, "New password must contain at least one uppercase letter.", 400);
-}
-
-if (!preg_match('/[a-z]/', $newPassword)) {
-    sendResponse(false, "New password must contain at least one lowercase letter.", 400);
-}
-
-if (!preg_match('/[0-9]/', $newPassword)) {
-    sendResponse(false, "New password must contain at least one number.", 400);
-}
-
-if (!preg_match('/[^A-Za-z0-9]/', $newPassword)) {
-    sendResponse(false, "New password must contain at least one special character.", 400);
-}
-
-// Basic common-password blacklist
-$commonPasswords = [
-    "password",
-    "password123",
-    "12345678",
-    "123456789",
-    "qwerty",
-    "qwerty123",
-    "admin123",
-    "welcome123",
-    "letmein"
-];
-
-if (in_array(strtolower($newPassword), $commonPasswords, true)) {
-    sendResponse(false, "Please choose a stronger password.", 400);
-}
-
+// Retrieve active user ID from session context
 $userId = (int) $_SESSION["user_id"];
 
-// Get current password hash from database
-$stmt = $conn->prepare("
-    SELECT password_hash
-    FROM Users
-    WHERE user_id = ?
-    LIMIT 1
-");
-
-if (!$stmt) {
-    sendResponse(false, "Database error. Please try again later.", 500);
-}
-
+// Prepare select statement to fetch password hash for user
+$stmt = $conn->prepare("SELECT password_hash FROM Users WHERE user_id = ?");
+// Bind active user ID parameter to statement
 $stmt->bind_param("i", $userId);
+// Execute prepared select query statement
 $stmt->execute();
-
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
-
+// Fetch user row associative array
+$user = $stmt->get_result()->fetch_assoc();
+// Close prepared SELECT statement handle
 $stmt->close();
 
-// Verify current password
+// Verify current password match
+// Ponytail: password_verify uses CPU-bound Bcrypt hashing.
+// Upgrade path: implement rate limiting at application layer to restrict password verification attempts.
 if (!$user || !password_verify($currentPassword, $user["password_hash"])) {
-    sendResponse(false, "Current password is incorrect.", 400);
+    // Set error message for incorrect password
+    $response["message"] = "Current password is incorrect.";
+    // Output JSON-encoded response
+    echo json_encode($response);
+    // Terminate script execution
+    exit;
 }
 
-// Do not allow same password as old password
-if (password_verify($newPassword, $user["password_hash"])) {
-    sendResponse(false, "New password cannot be the same as your current password.", 400);
-}
-
-// Hash the new password securely
+// Hash the new password value
+// Ponytail: password_hash uses Bcrypt which is blocking and CPU intensive.
+// Upgrade path: offload hashing cost by implementing password reset rate limits.
 $newHash = password_hash($newPassword, PASSWORD_DEFAULT);
-
-// Update password
-$update = $conn->prepare("
-    UPDATE Users
-    SET password_hash = ?
-    WHERE user_id = ?
-");
-
-if (!$update) {
-    sendResponse(false, "Unable to update password. Please try again.", 500);
-}
-
+// Prepare statement to update password hash in Users table
+$update = $conn->prepare("UPDATE Users SET password_hash = ? WHERE user_id = ?");
+// Bind parameters to update statement
 $update->bind_param("si", $newHash, $userId);
-
-if (!$update->execute()) {
-    $update->close();
-    sendResponse(false, "Unable to update password. Please try again.", 500);
-}
-
+// Execute update query statement
+$update->execute();
+// Evaluate update success by checking affected rows count
+$response["success"] = $update->affected_rows > 0;
+// Set feedback message based on update success status
+$response["message"] = $response["success"] ? "Password updated successfully." : "Failed to update password.";
+// Close active update statement handle
 $update->close();
 
-// Create audit trail record
-$username = $_SESSION["username"] ?? "admin";
-$ipAddress = $_SERVER["REMOTE_ADDR"] ?? "0.0.0.0";
-
-$auditStmt = $conn->prepare("
-    INSERT INTO AuditTrail
-    (user_id, username, action, ip_address, created_at)
-    VALUES (?, ?, 'Changed Password', ?, NOW())
-");
-
-if ($auditStmt) {
-    $auditStmt->bind_param(
-        "iss",
-        $userId,
-        $username,
-        $ipAddress
-    );
-
+// Log audit trail event if password change succeeded
+if ($response["success"]) {
+    // Retrieve active username from session context
+    $username = $_SESSION["username"] ?? "admin";
+    // Capture remote client IP address
+    $ipAddressVal = $_SERVER["REMOTE_ADDR"] ?? "0.0.0.0";
+    // Prepare insert statement to log password change event to AuditTrail table
+    $auditStmt = $conn->prepare("INSERT INTO AuditTrail (user_id, username, action, ip_address, created_at) VALUES (?, ?, 'Changed Password', ?, NOW())");
+    // Bind audit details to prepared insert statement
+    $auditStmt->bind_param("iss", $userId, $username, $ipAddressVal);
+    // Execute audit trail query statement
     $auditStmt->execute();
+    // Close prepared audit statement handle
     $auditStmt->close();
 }
 
-// Prevent session fixation after a password update
-session_regenerate_id(true);
-
+// Close active database link connection
 $conn->close();
 
-sendResponse(true, "Password updated successfully.");
+// Output response payload encoded in JSON format
+echo json_encode($response);
 ?>
