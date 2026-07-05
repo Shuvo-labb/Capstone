@@ -1,5 +1,5 @@
 <?php
-// Programmer Name : MD ABU SAYED SHUVO
+// Programmer Name : VISHVAN VARMA A/L SIVA KUMAR
 // Program Name    : handle_forgot_password.php
 // Description     : Authentication page or handler
 // First Commit Date: Friday,19-Jun-2026

@@ -8,7 +8,7 @@
 <!-- AI Security Chatbot widget outer layout container -->
 <div id="chatbot-widget">
   <!-- Render float button to toggle visibility of chatbot widget -->
-  <button id="chatbot-toggle" onclick="toggleChatbot()">Ã°Å¸Â¤â€“ AI Assistant</button>
+  <button id="chatbot-toggle" onclick="toggleChatbot()">🤖 AI Assistant</button>
   <!-- Render conversation chat window default to hidden style display -->
   <div id="chatbot-window" style="display:none;">
     <!-- Render header block with chatbot title name -->
@@ -16,7 +16,7 @@
       <!-- Render label text span for assistant -->
       <span>Security AI Assistant</span>
       <!-- Close action button with multiply sign representation -->
-      <button onclick="toggleChatbot()">Ãƒâ€”</button>
+      <button onclick="toggleChatbot()">×</button>
     <!-- Close chatbot header container -->
     </div>
     <!-- Create message box container to append dialogue list -->
