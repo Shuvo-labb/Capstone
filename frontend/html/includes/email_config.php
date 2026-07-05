@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : email_config.php
+// Description     : Shared include or helper
+// First Commit Date: Wednesday,24-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 /**
  * Email Configuration for Mailtrap
  * 

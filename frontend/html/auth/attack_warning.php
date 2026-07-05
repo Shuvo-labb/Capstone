@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : attack_warning.php
+// Description     : Authentication page or handler
+// First Commit Date: Sunday,21-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 // Start PHP session context
 session_start();
 ?>
@@ -201,7 +206,7 @@ session_start();
   <!-- Create warning dialog box card wrapper -->
   <div class="warning-container">
     <!-- Render alert icon graphic symbol -->
-    <div class="warning-icon">🚨</div>
+    <div class="warning-icon">ðŸš¨</div>
     <!-- Render main card header label -->
     <h1>Security Alert</h1>
     <!-- Render detailed warning messages -->
@@ -233,7 +238,7 @@ session_start();
     
     <!-- Render confirmation text indicating successful DB event record -->
     <div class="logged-info">
-      ✓ This attack has been logged to the security database
+      âœ“ This attack has been logged to the security database
     <!-- Close logged info block -->
     </div>
   <!-- Close warning container box wrapper -->

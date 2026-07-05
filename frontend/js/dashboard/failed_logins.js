@@ -1,3 +1,8 @@
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : failed_logins.js
+// Description     : Dashboard client script
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Friday,19-Jun-2026
 document.addEventListener('DOMContentLoaded', () => {
   const thresholdInput = document.getElementById('threshold');
   const initialThreshold = thresholdInput ? (Number(thresholdInput.value) || 5) : 5;

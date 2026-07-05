@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : index.php
+// Description     : Project source file
+// First Commit Date: Sunday,21-Jun-2026
+// Last Commit Date : Sunday,21-Jun-2026
 session_start();
 require_once __DIR__ . "/auth/global_security.php";
 require_once __DIR__ . "/../../database/db_connect.php";
@@ -470,22 +475,22 @@ $ctaLink = $isLoggedIn ? "../dashboard/index.php" : "auth/login.php";
     <h2 class="section-title">Core Capabilities</h2>
     <div class="features-grid">
       <div class="feature-card">
-        <div class="feature-icon">📡</div>
+        <div class="feature-icon">Ã°Å¸â€œÂ¡</div>
         <h3 class="feature-title">Real-Time Log Upload</h3>
         <p class="feature-desc">Upload Apache/Nginx access logs for instant parsing and threat detection with automated pattern recognition.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🔍</div>
+        <div class="feature-icon">Ã°Å¸â€Â</div>
         <h3 class="feature-title">Heuristic Pattern Parsing</h3>
         <p class="feature-desc">Advanced regex-based detection for SQL injection, XSS, brute force, and directory traversal attacks.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🛡️</div>
+        <div class="feature-icon">Ã°Å¸â€ºÂ¡Ã¯Â¸Â</div>
         <h3 class="feature-title">Deep SQLi/XSS Detection</h3>
         <p class="feature-desc">Real-time input interception on login forms and public endpoints with automatic threat logging.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">📊</div>
+        <div class="feature-icon">Ã°Å¸â€œÅ </div>
         <h3 class="feature-title">Filtered Export Engines</h3>
         <p class="feature-desc">Generate comprehensive security reports in CSV/PDF format with custom date ranges and threat filters.</p>
       </div>

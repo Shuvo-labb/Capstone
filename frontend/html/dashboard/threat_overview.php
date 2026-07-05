@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : threat_overview.php
+// Description     : Dashboard page
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Friday,19-Jun-2026
 require_once __DIR__ . "/../auth/require_login.php";
 ?>
 <!doctype html>
@@ -6,7 +11,7 @@ require_once __DIR__ . "/../auth/require_login.php";
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Threat Overview — Security Threat Dashboard</title>
+  <title>Threat Overview Ã¢â‚¬â€ Security Threat Dashboard</title>
   <link rel="stylesheet" href="../../css/style.css">
   <style>
     .overview-grid{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
@@ -77,11 +82,11 @@ require_once __DIR__ . "/../auth/require_login.php";
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
                 <div class="stat-card">
                   <div class="muted">Open Threats</div>
-                  <div id="openThreats" class="stat-value">—</div>
+                  <div id="openThreats" class="stat-value">Ã¢â‚¬â€</div>
                 </div>
                 <div class="stat-card">
                   <div class="muted">High Severity</div>
-                  <div id="highSeverity" class="stat-value">—</div>
+                  <div id="highSeverity" class="stat-value">Ã¢â‚¬â€</div>
                 </div>
               </div>
 

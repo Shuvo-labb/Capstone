@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : global_security.php
+// Description     : Authentication page or handler
+// First Commit Date: Sunday,21-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 // Start PHP code block
 // Include security_filter.php to access parameter scanning functions
 require_once __DIR__ . "/security_filter.php";

@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : monthly_report.php
+// Description     : Dashboard page
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 require_once __DIR__ . "/../auth/require_login.php";
 require_once __DIR__ . "/../auth/global_security.php";
 $active_page = 'monthly_report.php';
@@ -8,7 +13,7 @@ $active_page = 'monthly_report.php';
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Monthly Report — Security Threat Dashboard</title>
+  <title>Monthly Report â€” Security Threat Dashboard</title>
   <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body>
@@ -31,19 +36,19 @@ $active_page = 'monthly_report.php';
         <section class="stats">
           <div class="stat-card">
             <div class="muted">Threats This Month</div>
-            <div id="threatsMonth" class="stat-value">—</div>
+            <div id="threatsMonth" class="stat-value">â€”</div>
           </div>
           <div class="stat-card">
             <div class="muted">Critical This Month</div>
-            <div id="criticalMonth" class="stat-value">—</div>
+            <div id="criticalMonth" class="stat-value">â€”</div>
           </div>
           <div class="stat-card">
             <div class="muted">Unresolved This Month</div>
-            <div id="unresolvedMonth" class="stat-value">—</div>
+            <div id="unresolvedMonth" class="stat-value">â€”</div>
           </div>
           <div class="stat-card">
             <div class="muted">Avg Per Day</div>
-            <div id="avgPerDay" class="stat-value">—</div>
+            <div id="avgPerDay" class="stat-value">â€”</div>
           </div>
         </section>
 

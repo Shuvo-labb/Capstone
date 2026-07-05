@@ -1,3 +1,8 @@
+-- Programmer Name : MD ABU SAYED SHUVO
+-- Program Name    : security_threat_dashboard.sql
+-- Description     : Database configuration or schema
+-- First Commit Date: Friday,19-Jun-2026
+-- Last Commit Date : Thursday,25-Jun-2026
 -- Main database schema for Security Threat Dashboard
 -- Single consolidated database with all required tables
 

@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : export_reports.php
+// Description     : Dashboard page
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 require_once __DIR__ . "/../auth/require_login.php";
 require_once __DIR__ . "/../auth/global_security.php";
 $active_page = 'export_reports.php';
@@ -8,7 +13,7 @@ $active_page = 'export_reports.php';
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Export Reports — Security Threat Dashboard</title>
+  <title>Export Reports â€” Security Threat Dashboard</title>
   <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body>

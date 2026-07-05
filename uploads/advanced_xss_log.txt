@@ -1,3 +1,8 @@
+# Programmer Name : MD ABU SAYED SHUVO
+# Program Name    : advanced_xss_log.txt
+# Description     : Log sample or text resource
+# First Commit Date: Sunday,21-Jun-2026
+# Last Commit Date : Sunday,21-Jun-2026
 192.168.2.100 - - [19/Jun/2026:09:15:23 +0800] "GET /search.php?q=<script>alert('XSS')</script> HTTP/1.1" 200 1234
 192.168.2.101 - - [19/Jun/2026:09:16:45 +0800] "POST /comment.php HTTP/1.1" 200 5678
 192.168.2.102 - - [19/Jun/2026:09:18:12 +0800] "GET /profile.php?name=<img src=x onerror=alert(1)> HTTP/1.1" 200 2345

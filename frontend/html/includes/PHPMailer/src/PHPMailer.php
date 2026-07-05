@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : PHPMailer.php
+// Description     : Third-party mail library file
+// First Commit Date: Wednesday,24-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 
 /**
  * PHPMailer - PHP email creation and transport class.
@@ -4055,7 +4060,7 @@ class PHPMailer
      * @param string $encoding    File encoding (see $Encoding) defaults to `base64`
      * @param string $type        File MIME type (by default mapped from the `$path` filename's extension)
      * @param string $disposition Disposition to use: `inline` (default) or `attachment`
-     *                            (unlikely you want this – {@see `addAttachment()`} instead)
+     *                            (unlikely you want this Ã¢â‚¬â€œ {@see `addAttachment()`} instead)
      *
      * @return bool True on successfully adding an attachment
      * @throws Exception
@@ -4489,7 +4494,7 @@ class PHPMailer
                 return self::rfcDate();
             }
 
-            //Reject future dates — they are invalid for outgoing message headers
+            //Reject future dates Ã¢â‚¬â€ they are invalid for outgoing message headers
             if ($dt->getTimestamp() > time()) {
                 return self::rfcDate();
             }

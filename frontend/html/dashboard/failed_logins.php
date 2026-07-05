@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : failed_logins.php
+// Description     : Dashboard page
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 require_once __DIR__ . "/../auth/require_login.php";
 require_once __DIR__ . "/../auth/global_security.php";
 $active_page = 'failed_logins.php';
@@ -8,7 +13,7 @@ $active_page = 'failed_logins.php';
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Failed Login Attempts — Security Threat Dashboard</title>
+  <title>Failed Login Attempts â€” Security Threat Dashboard</title>
   <link rel="stylesheet" href="../../css/style.css">
   <style>
     .attempt-row{display:flex;justify-content:space-between;padding:10px;border-radius:10px;background:rgba(255,255,255,0.02);margin-bottom:8px}

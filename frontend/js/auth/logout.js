@@ -1,3 +1,8 @@
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : logout.js
+// Description     : Authentication client script
+// First Commit Date: Monday,25-May-2026
+// Last Commit Date : Monday,25-May-2026
 const logoutButton = document.getElementById("logoutButton");
 const logoutMessage = document.getElementById("logoutMessage");
 

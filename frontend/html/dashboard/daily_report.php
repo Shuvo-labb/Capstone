@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : daily_report.php
+// Description     : Dashboard page
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 require_once __DIR__ . "/../auth/require_login.php";
 require_once __DIR__ . "/../auth/global_security.php";
 $active_page = 'daily_report.php';
@@ -8,7 +13,7 @@ $active_page = 'daily_report.php';
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Daily Report — Security Threat Dashboard</title>
+  <title>Daily Report â€” Security Threat Dashboard</title>
   <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body>
@@ -31,19 +36,19 @@ $active_page = 'daily_report.php';
         <section class="stats">
           <div class="stat-card">
             <div class="muted">Threats Today</div>
-            <div id="threatsToday" class="stat-value">—</div>
+            <div id="threatsToday" class="stat-value">â€”</div>
           </div>
           <div class="stat-card">
             <div class="muted">Critical Today</div>
-            <div id="criticalToday" class="stat-value">—</div>
+            <div id="criticalToday" class="stat-value">â€”</div>
           </div>
           <div class="stat-card">
             <div class="muted">Unresolved Today</div>
-            <div id="unresolvedToday" class="stat-value">—</div>
+            <div id="unresolvedToday" class="stat-value">â€”</div>
           </div>
           <div class="stat-card">
             <div class="muted">Logs Uploaded</div>
-            <div id="logsToday" class="stat-value">—</div>
+            <div id="logsToday" class="stat-value">â€”</div>
           </div>
         </section>
 

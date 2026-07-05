@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : change_password.php
+// Description     : Dashboard API endpoint
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 // Start PHP code block
 // Include database connection file
 require_once __DIR__ . "/../../../../database/db_connect.php";

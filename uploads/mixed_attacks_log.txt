@@ -1,3 +1,8 @@
+# Programmer Name : MD ABU SAYED SHUVO
+# Program Name    : mixed_attacks_log.txt
+# Description     : Log sample or text resource
+# First Commit Date: Sunday,21-Jun-2026
+# Last Commit Date : Sunday,21-Jun-2026
 192.168.5.100 - - [19/Jun/2026:12:15:23 +0800] "GET /login.php?id=1' OR '1'='1 HTTP/1.1" 200 1234
 192.168.5.101 - - [19/Jun/2026:12:16:45 +0800] "GET /search.php?q=<script>alert('XSS')</script> HTTP/1.1" 200 5678
 192.168.5.102 - - [19/Jun/2026:12:18:12 +0800] "GET /file.php?path=../../etc/passwd HTTP/1.1" 200 2345

@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : TAN YONG SENG
+// Program Name    : threat_analysis.php
+// Description     : Dashboard page
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 require_once __DIR__ . "/../auth/require_login.php";
 require_once __DIR__ . "/../auth/global_security.php";
 $active_page = 'threat_analysis.php';
@@ -8,7 +13,7 @@ $active_page = 'threat_analysis.php';
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Threat Analysis — Security Threat Dashboard</title>
+  <title>Threat Analysis â€” Security Threat Dashboard</title>
   <link rel="stylesheet" href="../../css/style.css">
   <style>
     .badge{padding:6px 8px;border-radius:10px;font-weight:700}
@@ -38,19 +43,19 @@ $active_page = 'threat_analysis.php';
         <section class="stats">
           <div class="stat-card">
             <div class="muted">Total Threats</div>
-            <div id="totalThreats" class="stat-value">—</div>
+            <div id="totalThreats" class="stat-value">â€”</div>
           </div>
           <div class="stat-card">
             <div class="muted">Critical Severity</div>
-            <div id="criticalCount" class="stat-value">—</div>
+            <div id="criticalCount" class="stat-value">â€”</div>
           </div>
           <div class="stat-card">
             <div class="muted">Unresolved</div>
-            <div id="unresolvedCount" class="stat-value">—</div>
+            <div id="unresolvedCount" class="stat-value">â€”</div>
           </div>
           <div class="stat-card">
             <div class="muted">Unique IPs</div>
-            <div id="uniqueIps" class="stat-value">—</div>
+            <div id="uniqueIps" class="stat-value">â€”</div>
           </div>
         </section>
 

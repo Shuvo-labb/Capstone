@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : real_time_alerts.php
+// Description     : Dashboard page
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Friday,19-Jun-2026
 require_once __DIR__ . "/../auth/require_login.php";
 ?>
 <!doctype html>
@@ -6,7 +11,7 @@ require_once __DIR__ . "/../auth/require_login.php";
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Real-Time Alerts — Security Threat Dashboard</title>
+  <title>Real-Time Alerts Ã¢â‚¬â€ Security Threat Dashboard</title>
   <link rel="stylesheet" href="../../css/style.css">
   <style>
     .alerts-grid{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
@@ -65,8 +70,8 @@ require_once __DIR__ . "/../auth/require_login.php";
       <div class="main-content">
         <div class="topbar">
           <div>
-            <h2 style="margin:0 0 6px 0">Real‑Time Alerts</h2>
-            <p class="muted" style="margin:0">Incoming alerts stream — mock real‑time view until backend is ready.</p>
+            <h2 style="margin:0 0 6px 0">RealÃ¢â‚¬â€˜Time Alerts</h2>
+            <p class="muted" style="margin:0">Incoming alerts stream Ã¢â‚¬â€ mock realÃ¢â‚¬â€˜time view until backend is ready.</p>
           </div>
           <div class="actions">
             <a class="small-btn" href="../auth/logout.php">Logout</a>

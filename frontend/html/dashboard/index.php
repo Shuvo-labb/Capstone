@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : index.php
+// Description     : Dashboard page
+// First Commit Date: Monday,25-May-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 require_once __DIR__ . "/../auth/require_login.php";
 require_once __DIR__ . "/../auth/global_security.php";
 $active_page = 'index.php';
@@ -8,7 +13,7 @@ $active_page = 'index.php';
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Security Threat Dashboard — Main</title>
+  <title>Security Threat Dashboard â€” Main</title>
   <link rel="stylesheet" href="../../css/style.css">
   <style>
     .dashboard-shell{padding:28px;}
@@ -44,19 +49,19 @@ $active_page = 'index.php';
     <section class="stats">
       <div class="stat-card">
         <div class="muted">Total Threats</div>
-        <div id="totalThreats" class="stat-value">—</div>
+        <div id="totalThreats" class="stat-value">â€”</div>
       </div>
       <div class="stat-card">
         <div class="muted">Open Alerts</div>
-        <div id="openAlerts" class="stat-value">—</div>
+        <div id="openAlerts" class="stat-value">â€”</div>
       </div>
       <div class="stat-card">
         <div class="muted">High Severity</div>
-        <div id="highSeverity" class="stat-value">—</div>
+        <div id="highSeverity" class="stat-value">â€”</div>
       </div>
       <div class="stat-card">
         <div class="muted">Last Upload</div>
-        <div id="lastUpload" class="stat-value">—</div>
+        <div id="lastUpload" class="stat-value">â€”</div>
       </div>
     </section>
 
@@ -77,7 +82,7 @@ $active_page = 'index.php';
             <tr><th>Detected At</th><th>Type</th><th>Severity</th><th>IP Address</th><th>Action</th></tr>
           </thead>
           <tbody id="threatsTable">
-            <tr><td colspan="5" class="muted">Loading…</td></tr>
+            <tr><td colspan="5" class="muted">Loadingâ€¦</td></tr>
           </tbody>
         </table>
       </div>

@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : sidebar.php
+// Description     : Dashboard page
+// First Commit Date: Wednesday,24-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 // Sidebar navigation - reusable component for all dashboard pages
 // Active page is set via $active_page variable before including this file
 $active_page = $active_page ?? 'index.php';

@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : SMTP.php
+// Description     : Third-party mail library file
+// First Commit Date: Wednesday,24-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 
 /**
  * PHPMailer RFC821 SMTP email transport class.

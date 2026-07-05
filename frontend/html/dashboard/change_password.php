@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : VISHVAN VARMA A/L SIVA KUMAR
+// Program Name    : change_password.php
+// Description     : Dashboard page
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 require_once __DIR__ . "/../auth/require_login.php";
 require_once __DIR__ . "/../auth/global_security.php";
 $active_page = 'change_password.php';
@@ -8,7 +13,7 @@ $active_page = 'change_password.php';
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Security Threat Dashboard — Change Password</title>
+  <title>Security Threat Dashboard â€” Change Password</title>
   <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body>

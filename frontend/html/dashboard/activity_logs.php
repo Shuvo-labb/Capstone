@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : activity_logs.php
+// Description     : Dashboard page
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Friday,19-Jun-2026
 require_once __DIR__ . "/../auth/require_login.php";
 ?>
 <!doctype html>
@@ -6,7 +11,7 @@ require_once __DIR__ . "/../auth/require_login.php";
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Activity Logs — Security Threat Dashboard</title>
+  <title>Activity Logs Ã¢â‚¬â€ Security Threat Dashboard</title>
   <link rel="stylesheet" href="../../css/style.css">
   <style>
     .logs-table{width:100%;border-collapse:collapse}

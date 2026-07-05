@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : statistics.php
+// Description     : Dashboard page
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Friday,19-Jun-2026
 require_once __DIR__ . "/../auth/require_login.php";
 ?>
 <!doctype html>
@@ -6,7 +11,7 @@ require_once __DIR__ . "/../auth/require_login.php";
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Statistics — Security Threat Dashboard</title>
+  <title>Statistics Ã¢â‚¬â€ Security Threat Dashboard</title>
   <link rel="stylesheet" href="../../css/style.css">
   <style>
     .stats-grid{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
@@ -75,9 +80,9 @@ require_once __DIR__ . "/../auth/require_login.php";
           <div class="stats-grid">
             <div>
               <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
-                <div class="stat-card"><div class="muted">Total Threats</div><div id="totalThreatsStat" class="stat-value">—</div></div>
-                <div class="stat-card"><div class="muted">Unique IPs</div><div id="uniqueIps" class="stat-value">—</div></div>
-                <div class="stat-card"><div class="muted">Avg per day</div><div id="avgPerDay" class="stat-value">—</div></div>
+                <div class="stat-card"><div class="muted">Total Threats</div><div id="totalThreatsStat" class="stat-value">Ã¢â‚¬â€</div></div>
+                <div class="stat-card"><div class="muted">Unique IPs</div><div id="uniqueIps" class="stat-value">Ã¢â‚¬â€</div></div>
+                <div class="stat-card"><div class="muted">Avg per day</div><div id="avgPerDay" class="stat-value">Ã¢â‚¬â€</div></div>
               </div>
 
               <div style="margin-top:14px" class="section">

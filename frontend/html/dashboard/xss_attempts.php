@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : xss_attempts.php
+// Description     : Dashboard page
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 require_once __DIR__ . "/../auth/require_login.php";
 require_once __DIR__ . "/../auth/global_security.php";
 $active_page = 'xss_attempts.php';
@@ -8,7 +13,7 @@ $active_page = 'xss_attempts.php';
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>XSS Attempts — Security Threat Dashboard</title>
+  <title>XSS Attempts â€” Security Threat Dashboard</title>
   <link rel="stylesheet" href="../../css/style.css">
   <style>
     .badge{padding:6px 8px;border-radius:10px;font-weight:700}
@@ -37,19 +42,19 @@ $active_page = 'xss_attempts.php';
         <section class="stats">
           <div class="stat-card">
             <div class="muted">Total XSS Attempts</div>
-            <div id="totalXss" class="stat-value">—</div>
+            <div id="totalXss" class="stat-value">â€”</div>
           </div>
           <div class="stat-card">
             <div class="muted">High Severity</div>
-            <div id="highXss" class="stat-value">—</div>
+            <div id="highXss" class="stat-value">â€”</div>
           </div>
           <div class="stat-card">
             <div class="muted">Unresolved</div>
-            <div id="unresolvedXss" class="stat-value">—</div>
+            <div id="unresolvedXss" class="stat-value">â€”</div>
           </div>
           <div class="stat-card">
             <div class="muted">Unique IPs</div>
-            <div id="uniqueIps" class="stat-value">—</div>
+            <div id="uniqueIps" class="stat-value">â€”</div>
           </div>
         </section>
 

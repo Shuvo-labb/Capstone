@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : HEW KAI SIANG
+// Program Name    : parser_results.php
+// Description     : Dashboard page
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Saturday,04-Jul-2026
 require_once __DIR__ . "/../auth/require_login.php";
 require_once __DIR__ . "/../auth/global_security.php";
 $active_page = 'parser_results.php';
@@ -8,7 +13,7 @@ $active_page = 'parser_results.php';
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Parser Results — Security Threat Dashboard</title>
+  <title>Parser Results â€” Security Threat Dashboard</title>
   <link rel="stylesheet" href="../../css/parserstyle.css">
 
 </head>

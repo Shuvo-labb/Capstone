@@ -1,3 +1,8 @@
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : suspicious_ips.js
+// Description     : Dashboard client script
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Friday,19-Jun-2026
 document.addEventListener('DOMContentLoaded', () => {
   loadSuspiciousIps();
   const searchBtn = document.getElementById('searchBtn');
@@ -33,7 +38,7 @@ function renderIps(list) {
     d.innerHTML = `<div>
       <div><strong>${escapeHtml(ip.ip)}</strong></div>
       <div class="meta">${escapeHtml(ip.reason)}</div>
-      <div class="meta">Seen: ${escapeHtml(ip.firstSeen)} → ${escapeHtml(ip.lastSeen)}</div>
+      <div class="meta">Seen: ${escapeHtml(ip.firstSeen)} â†’ ${escapeHtml(ip.lastSeen)}</div>
     </div>
     <div style="text-align:right">
       <div style="margin-bottom:8px">${ip.blocked ? '<span class="badge high">Blocked</span>' : '<span class="badge low">Watching</span>'}</div>

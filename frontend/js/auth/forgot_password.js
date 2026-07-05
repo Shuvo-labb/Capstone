@@ -1,3 +1,8 @@
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : forgot_password.js
+// Description     : Authentication client script
+// First Commit Date: Monday,25-May-2026
+// Last Commit Date : Friday,19-Jun-2026
 document.addEventListener("DOMContentLoaded", () => {
     const forgotForm = document.getElementById("forgotForm");
     const forgotMessage = document.getElementById("forgotMessage");

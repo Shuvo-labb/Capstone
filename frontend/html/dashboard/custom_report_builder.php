@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : custom_report_builder.php
+// Description     : Dashboard page
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 require_once __DIR__ . "/../auth/require_login.php";
 require_once __DIR__ . "/../auth/global_security.php";
 $active_page = 'custom_report_builder.php';
@@ -8,7 +13,7 @@ $active_page = 'custom_report_builder.php';
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Custom Report Builder — Security Threat Dashboard</title>
+  <title>Custom Report Builder â€” Security Threat Dashboard</title>
   <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body>

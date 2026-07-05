@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : test_email.php
+// Description     : Shared include or helper
+// First Commit Date: Wednesday,24-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 // Test email functionality with PHPMailer
 require_once __DIR__ . '/EmailHelper.php';
 

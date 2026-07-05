@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : EmailHelper.php
+// Description     : Shared include or helper
+// First Commit Date: Wednesday,24-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 /**
  * PHPMailer Email Helper for Mailtrap
  * 
@@ -132,7 +137,7 @@ class EmailHelper {
      * @return bool Success status
      */
     public function sendAttackAlert($attackType, $ipAddress, $payload, $targetEndpoint) {
-        $subject = "⚠️ CRITICAL ATTACK ALERT: $attackType detected";
+        $subject = "Ã¢Å¡Â Ã¯Â¸Â CRITICAL ATTACK ALERT: $attackType detected";
         
         $body = "
         <html>
@@ -151,7 +156,7 @@ class EmailHelper {
         <body>
             <div class='container'>
                 <div class='header'>
-                    <h2>🚨 CRITICAL SECURITY ALERT</h2>
+                    <h2>Ã°Å¸Å¡Â¨ CRITICAL SECURITY ALERT</h2>
                 </div>
                 <div class='content'>
                     <div class='alert-box'>

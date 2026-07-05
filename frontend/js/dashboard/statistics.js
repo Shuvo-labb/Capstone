@@ -1,3 +1,8 @@
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : statistics.js
+// Description     : Dashboard client script
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Friday,19-Jun-2026
 document.addEventListener('DOMContentLoaded', () => {
   initStatistics();
 });

@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : forgot_password.php
+// Description     : Authentication page or handler
+// First Commit Date: Monday,25-May-2026
+// Last Commit Date : Friday,19-Jun-2026
 session_start();
 
 if (isset($_SESSION["user_id"])) {
@@ -11,7 +16,7 @@ if (isset($_SESSION["user_id"])) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Forgot Password — Security Threat Dashboard</title>
+  <title>Forgot Password â€” Security Threat Dashboard</title>
   <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body>

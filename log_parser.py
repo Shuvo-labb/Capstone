@@ -1,3 +1,8 @@
+# Programmer Name : MURTAZA MUSTAFA HAROON, KEERTHENAN A/L RAVEENTHAR
+# Program Name    : log_parser.py
+# Description     : Python log parser
+# First Commit Date: Friday,19-Jun-2026
+# Last Commit Date : Wednesday,24-Jun-2026
 # Import regular expressions module
 import re
 # Import system module for exit and argv

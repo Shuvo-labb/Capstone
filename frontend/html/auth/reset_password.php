@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : reset_password.php
+// Description     : Authentication page or handler
+// First Commit Date: Monday,25-May-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 // Start PHP session to load stored login state
 session_start();
 // Check if user session variable is already set
@@ -20,7 +25,7 @@ if (isset($_SESSION["user_id"])) {
   <!-- Define responsive design viewport scaling settings -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Set page title string -->
-  <title>Reset Password — Security Threat Dashboard</title>
+  <title>Reset Password â€” Security Threat Dashboard</title>
   <!-- Include global stylesheet resource -->
   <link rel="stylesheet" href="../../css/style.css">
 <!-- End document head block -->

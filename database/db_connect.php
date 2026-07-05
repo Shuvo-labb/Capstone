@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : db_connect.php
+// Description     : Database configuration or schema
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 // Start PHP code block
 // Set the database host name
 $servername = "localhost";

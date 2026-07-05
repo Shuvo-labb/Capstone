@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : download_export.php
+// Description     : Dashboard API endpoint
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Friday,19-Jun-2026
 require_once __DIR__ . "/../../../../database/db_connect.php";
 require_once __DIR__ . "/../../auth/require_login.php";
 
@@ -31,7 +36,7 @@ if (!file_exists($fullPath)) {
     die("The requested report file does not exist on disk.");
 }
 
-header("Content-Description: File Transfer");
+header("Content-Description     : File Transfer");
 header("Expires: 0");
 header("Cache-Control: must-revalidate");
 header("Pragma: public");

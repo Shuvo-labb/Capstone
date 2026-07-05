@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : handle_forgot_password.php
+// Description     : Authentication page or handler
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 // Start PHP code block
 // Include database connection file
 require_once __DIR__ . "/../../../database/db_connect.php";

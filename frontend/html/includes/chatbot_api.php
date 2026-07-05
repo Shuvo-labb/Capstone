@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : chatbot_api.php
+// Description     : Shared include or helper
+// First Commit Date: Wednesday,24-Jun-2026
+// Last Commit Date : Wednesday,01-Jul-2026
 require_once __DIR__ . '/../../../database/db_connect.php';
 header('Content-Type: application/json');
 $config = require __DIR__ . '/gemini_config.php';

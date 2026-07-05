@@ -1,3 +1,8 @@
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : main.js
+// Description     : Dashboard client script
+// First Commit Date: Monday,18-May-2026
+// Last Commit Date : Friday,19-Jun-2026
 document.addEventListener('DOMContentLoaded', () => {
   loadDashboard();
 });

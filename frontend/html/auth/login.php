@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : login.php
+// Description     : Authentication page or handler
+// First Commit Date: Monday,25-May-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 // Start PHP session to load stored login state
 session_start();
 // Include the global security check filter

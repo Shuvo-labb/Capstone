@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : detailed_threat_report.php
+// Description     : Dashboard page
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 require_once __DIR__ . "/../auth/require_login.php";
 require_once __DIR__ . "/../auth/global_security.php";
 $active_page = 'detailed_threat_report.php';
@@ -8,7 +13,7 @@ $active_page = 'detailed_threat_report.php';
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Detailed Threat Report — Security Threat Dashboard</title>
+  <title>Detailed Threat Report â€” Security Threat Dashboard</title>
   <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body>
@@ -39,30 +44,30 @@ $active_page = 'detailed_threat_report.php';
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
               <div class="stat-card">
                 <div class="muted">Threat Type</div>
-                <div id="detailType" class="stat-value">—</div>
+                <div id="detailType" class="stat-value">â€”</div>
               </div>
               <div class="stat-card">
                 <div class="muted">Severity</div>
-                <div id="detailSeverity" class="stat-value">—</div>
+                <div id="detailSeverity" class="stat-value">â€”</div>
               </div>
               <div class="stat-card">
                 <div class="muted">IP Address</div>
-                <div id="detailIp" class="stat-value">—</div>
+                <div id="detailIp" class="stat-value">â€”</div>
               </div>
               <div class="stat-card">
                 <div class="muted">Detected At</div>
-                <div id="detailDetected" class="stat-value">—</div>
+                <div id="detailDetected" class="stat-value">â€”</div>
               </div>
             </div>
 
             <div class="section">
               <h4>Action Taken</h4>
-              <p id="detailAction" class="muted">—</p>
+              <p id="detailAction" class="muted">â€”</p>
             </div>
 
             <div class="section" style="margin-top:12px">
               <h4>Status</h4>
-              <p id="detailStatus" class="muted">—</p>
+              <p id="detailStatus" class="muted">â€”</p>
             </div>
 
             <div style="margin-top:12px">

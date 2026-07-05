@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : register.php
+// Description     : Authentication page or handler
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 // Start PHP session to load stored login state
 session_start();
 // Check if user session variable is already set

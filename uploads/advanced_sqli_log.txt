@@ -1,3 +1,8 @@
+# Programmer Name : MD ABU SAYED SHUVO
+# Program Name    : advanced_sqli_log.txt
+# Description     : Log sample or text resource
+# First Commit Date: Sunday,21-Jun-2026
+# Last Commit Date : Sunday,21-Jun-2026
 192.168.1.100 - - [19/Jun/2026:08:15:23 +0800] "GET /login.php?id=1' OR '1'='1 HTTP/1.1" 200 1234
 192.168.1.101 - - [19/Jun/2026:08:16:45 +0800] "POST /login.php HTTP/1.1" 200 5678
 192.168.1.102 - - [19/Jun/2026:08:18:12 +0800] "GET /search.php?q=test' UNION SELECT username,password FROM users-- HTTP/1.1" 200 2345

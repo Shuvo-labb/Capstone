@@ -1,3 +1,8 @@
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : threat_overview.js
+// Description     : Dashboard client script
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Friday,19-Jun-2026
 document.addEventListener('DOMContentLoaded', () => {
   loadThreatOverview();
 });
@@ -68,7 +73,7 @@ function populateRecentList(rows){
     div.className = 'threat-row';
     div.innerHTML = `<div>
         <div><strong>${escapeHtml(r.type)}</strong></div>
-        <div class="meta">${escapeHtml(r.detected_at)} — ${escapeHtml(r.ip)}</div>
+        <div class="meta">${escapeHtml(r.detected_at)} Ã¢â‚¬â€ ${escapeHtml(r.ip)}</div>
       </div>
       <div style="text-align:right">
         <div class="meta">${escapeHtml(r.severity)}</div>

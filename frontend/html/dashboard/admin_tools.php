@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : admin_tools.php
+// Description     : Dashboard page
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Friday,19-Jun-2026
 // Admin Tools
 // This page will contain administrative utilities.
 ?>
@@ -7,7 +12,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Security Threat Dashboard — Admin Tools</title>
+  <title>Security Threat Dashboard Ã¢â‚¬â€ Admin Tools</title>
   <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body>

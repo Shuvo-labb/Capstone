@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : delete_resolved.php
+// Description     : Dashboard API endpoint
+// First Commit Date: Sunday,21-Jun-2026
+// Last Commit Date : Sunday,21-Jun-2026
 require_once __DIR__ . "/../../../../database/db_connect.php";
 require_once __DIR__ . "/../../auth/require_login.php";
 

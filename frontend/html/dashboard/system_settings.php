@@ -1,4 +1,9 @@
 <?php
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : system_settings.php
+// Description     : Dashboard page
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Wednesday,24-Jun-2026
 require_once __DIR__ . "/../auth/require_login.php";
 require_once __DIR__ . "/../auth/global_security.php";
 require_once __DIR__ . "/../../../database/db_connect.php";
@@ -9,7 +14,7 @@ $active_page = 'system_settings.php';
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Security Threat Dashboard — System Settings</title>
+  <title>Security Threat Dashboard â€” System Settings</title>
   <link rel="stylesheet" href="../../css/style.css">
 </head>
 <body>

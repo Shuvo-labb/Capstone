@@ -1,3 +1,8 @@
+// Programmer Name : MD ABU SAYED SHUVO
+// Program Name    : real_time_alerts.js
+// Description     : Dashboard client script
+// First Commit Date: Friday,19-Jun-2026
+// Last Commit Date : Friday,19-Jun-2026
 document.addEventListener('DOMContentLoaded', () => {
   initRealtimeAlerts();
 });
@@ -125,7 +130,7 @@ function renderAlertRow(a, flash) {
 
   row.innerHTML = `<div>
       <div><strong>${escapeHtml(a.type)}</strong> ${a.resolved ? statusHtml : ''}</div>
-      <div class="meta">${escapeHtml(a.detected_at)} — ${escapeHtml(a.ip)}</div>
+      <div class="meta">${escapeHtml(a.detected_at)} â€” ${escapeHtml(a.ip)}</div>
     </div>
     <div style="text-align:right">
       <div class="meta">${escapeHtml(a.severity)}</div>
